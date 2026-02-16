@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>RepoSpace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #09090b;
+    --surface: #18181b;
+    --surface-2: #27272a;
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(255,255,255,0.15);
+    --text: #fafafa;
+    --text-2: #a1a1aa;
+    --text-3: #71717a;
+    --accent: #3b82f6;
+    --accent-soft: rgba(59,130,246,0.12);
+    --green: #22c55e;
+    --green-soft: rgba(34,197,94,0.12);
+    --orange: #f59e0b;
+    --orange-soft: rgba(245,158,11,0.12);
+    --radius: 10px;
+    --radius-sm: 6px;
+    --font: 'Inter', -apple-system, system-ui, sans-serif;
+    --transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+  }
+
+  ::selection { background: var(--accent-soft); color: var(--accent); }
+
+  /* ── Sidebar + Layout ── */
+  .layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    width: 240px;
+    border-right: 1px solid var(--border);
+    padding: 16px 0;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background: var(--bg);
+    z-index: 50;
+    transition: transform var(--transition);
+  }
+
+  .sidebar-header {
+    padding: 0 16px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .sidebar-section {
+    padding: 8px 8px;
+  }
+
+  .sidebar-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0 8px 6px;
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--text-2);
+    transition: all var(--transition);
+    font-size: 13px;
+  }
+
+  .sidebar-item:hover { background: var(--surface); color: var(--text); }
+  .sidebar-item.active { background: var(--surface); color: var(--text); }
+
+  .sidebar-item .icon {
+    width: 16px;
+    text-align: center;
+    font-size: 14px;
+    opacity: 0.7;
+  }
+
+  .sidebar-item .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .sidebar-spacer { flex: 1; }
+
+  .sidebar-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .user-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+
+  .user-pill:hover { background: var(--surface); }
+
+  .user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .user-name { font-size: 13px; color: var(--text-2); }
+
+  /* ── Main Content ── */
+  .main {
+    flex: 1;
+    margin-left: 240px;
+    min-height: 100vh;
+  }
+
+  .page-header {
+    padding: 32px 40px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-header h1 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+  }
+
+  .page-header p {
+    color: var(--text-3);
+    font-size: 13px;
+  }
+
+  .content {
+    padding: 0 40px;
+  }
+
+  /* ── Repo Cards ── */
+  .repo-grid {
+    padding: 24px 0;
+    display: grid;
+    gap: 1px;
+    background: var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .repo-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+    background: var(--bg);
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+
+  .repo-row:hover { background: var(--surface); }
+
+  .repo-row .repo-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+  }
+
+  .repo-row .info { flex: 1; min-width: 0; }
+
+  .repo-row .name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .repo-row .desc {
+    font-size: 12px;
+    color: var(--text-3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .repo-row .meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+
+  .repo-row .lang {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+
+  .repo-row .lang .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .repo-row .updated {
+    font-size: 12px;
+    color: var(--text-3);
+    white-space: nowrap;
+  }
+
+  .badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .badge-blue { background: var(--accent-soft); color: var(--accent); }
+  .badge-green { background: var(--green-soft); color: var(--green); }
+  .badge-orange { background: var(--orange-soft); color: var(--orange); }
+
+  /* ── Branch Switcher ── */
+  .branch-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 40px 0;
+  }
+
+  .branch-select {
+    position: relative;
+  }
+
+  .branch-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 13px;
+    font-family: var(--font);
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+
+  .branch-btn:hover { border-color: var(--border-hover); }
+
+  .branch-btn .branch-icon {
+    font-size: 14px;
+    opacity: 0.6;
+  }
+
+  .branch-btn .arrow {
+    font-size: 10px;
+    color: var(--text-3);
+    margin-left: 4px;
+  }
+
+  .branch-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 240px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    z-index: 80;
+    overflow: hidden;
+  }
+
+  .branch-dropdown.open { display: block; }
+
+  .branch-dropdown-header {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-3);
+  }
+
+  .branch-search {
+    width: 100%;
+    padding: 8px 12px;
+    background: var(--bg);
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-size: 13px;
+    font-family: var(--font);
+    outline: none;
+  }
+
+  .branch-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-2);
+    transition: background var(--transition);
+  }
+
+  .branch-option:hover { background: var(--surface-2); color: var(--text); }
+  .branch-option.active { color: var(--text); }
+
+  .branch-option .check-mark {
+    color: var(--accent);
+    font-size: 14px;
+  }
+
+  .branch-option .branch-meta {
+    font-size: 11px;
+    color: var(--text-3);
+  }
+
+  /* ── Tabs (Files / Commits) ── */
+  .view-tabs {
+    display: flex;
+    gap: 0;
+    padding: 12px 40px 0;
+  }
+
+  .view-tab {
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--text-3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all var(--transition);
+    font-family: var(--font);
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .view-tab:hover { color: var(--text-2); }
+  .view-tab.active { color: var(--text); border-bottom-color: var(--accent); }
+
+  .tab-divider {
+    border-bottom: 1px solid var(--border);
+    margin-top: -1px;
+  }
+
+  /* ── Commit History ── */
+  .commit-list {
+    padding: 0;
+  }
+
+  .commit-group-label {
+    padding: 16px 40px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-3);
+  }
+
+  .commit-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 40px;
+    border-bottom: 1px solid var(--border);
+    transition: background var(--transition);
+    cursor: pointer;
+  }
+
+  .commit-row:hover { background: var(--surface); }
+
+  .commit-row .commit-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    flex-shrink: 0;
+    color: var(--text-2);
+    margin-top: 1px;
+  }
+
+  .commit-row .commit-avatar.bot {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .commit-info { flex: 1; min-width: 0; }
+
+  .commit-msg {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .commit-detail {
+    font-size: 12px;
+    color: var(--text-3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .commit-detail .author { color: var(--text-2); }
+
+  .commit-sha {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 2px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: opacity var(--transition);
+  }
+
+  .commit-sha:hover { opacity: 0.8; }
+
+  .commit-stats {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    font-size: 12px;
+    font-family: 'SF Mono', monospace;
+  }
+
+  .commit-stats .additions { color: var(--green); }
+  .commit-stats .deletions { color: #ef4444; }
+
+  @media (max-width: 768px) {
+    .branch-bar { padding: 12px 16px 0; }
+    .view-tabs { padding: 8px 16px 0; }
+    .commit-group-label { padding: 12px 16px 6px; }
+    .commit-row { padding: 10px 16px; }
+    .commit-stats { display: none; }
+  }
+
+  /* ── File Browser ── */
+  .file-header {
+    padding: 20px 40px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+  }
+
+  .breadcrumb a {
+    color: var(--text-3);
+    text-decoration: none;
+    cursor: pointer;
+    transition: color var(--transition);
+  }
+
+  .breadcrumb a:hover { color: var(--text); }
+  .breadcrumb .sep { color: var(--text-3); opacity: 0.4; }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .file-count { font-size: 12px; color: var(--text-3); }
+
+  .file-table {
+    margin: 0;
+  }
+
+  .file-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 40px;
+    cursor: pointer;
+    transition: background var(--transition);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .file-row:last-child { border-bottom: none; }
+  .file-row:hover { background: var(--surface); }
+
+  .file-row .f-icon {
+    width: 20px;
+    text-align: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  .file-row .f-name {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text);
+  }
+
+  .file-row .f-name.folder { color: var(--text-2); }
+
+  .file-row .f-badge {
+    font-size: 11px;
+    color: var(--green);
+    background: var(--green-soft);
+    padding: 1px 7px;
+    border-radius: 20px;
+  }
+
+  .file-row .f-meta {
+    font-size: 12px;
+    color: var(--text-3);
+    width: 80px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .file-row .f-time {
+    font-size: 12px;
+    color: var(--text-3);
+    width: 70px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ── Document View ── */
+  .doc-toolbar {
+    padding: 12px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+  }
+
+  .doc-toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .doc-toolbar .back {
+    color: var(--text-3);
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color var(--transition);
+  }
+
+  .doc-toolbar .back:hover { color: var(--text); }
+
+  .doc-toolbar .doc-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+  }
+
+  .doc-toolbar-right {
+    display: flex;
+    gap: 6px;
+  }
+
+  .btn {
+    padding: 5px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-2);
+    transition: all var(--transition);
+    font-family: var(--font);
+  }
+
+  .btn:hover { background: var(--surface); color: var(--text); border-color: var(--border-hover); }
+
+  .btn-primary {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+
+  .btn-primary:hover { opacity: 0.9; background: var(--text); color: var(--bg); }
+
+  /* Document content */
+  .doc-content {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 40px 80px;
+  }
+
+  .doc-meta {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-bottom: 32px;
+    display: flex;
+    gap: 16px;
+  }
+
+  .doc-content h1 {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .doc-content h2 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    margin: 36px 0 12px;
+    color: var(--text);
+  }
+
+  .doc-content h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 24px 0 8px;
+    color: var(--text);
+  }
+
+  .doc-content p {
+    margin-bottom: 16px;
+    color: var(--text-2);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .doc-content ul, .doc-content ol {
+    margin-bottom: 16px;
+    padding-left: 20px;
+  }
+
+  .doc-content li {
+    margin-bottom: 6px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-2);
+  }
+
+  .doc-content code {
+    background: var(--surface);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--text);
+  }
+
+  .doc-content pre {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+  }
+
+  .doc-content pre code {
+    background: none;
+    padding: 0;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .doc-content blockquote {
+    border-left: 2px solid var(--surface-2);
+    padding-left: 16px;
+    margin: 0 0 16px;
+    color: var(--text-3);
+  }
+
+  .doc-content strong { color: var(--text); font-weight: 600; }
+
+  .doc-content .checklist {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .doc-content .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .doc-content .check { opacity: 0.5; }
+  .doc-content .check.done { opacity: 1; }
+
+  /* Editor */
+  .editor-wrap {
+    display: none;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 40px 80px;
+  }
+
+  .editor-wrap.active { display: block; }
+
+  .editor-bar {
+    display: flex;
+    gap: 2px;
+    padding: 8px 0 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .editor-bar button {
+    background: none;
+    border: none;
+    color: var(--text-3);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: var(--font);
+    transition: all var(--transition);
+  }
+
+  .editor-bar button:hover { background: var(--surface); color: var(--text); }
+
+  .editor-ta {
+    width: 100%;
+    min-height: 500px;
+    background: transparent;
+    border: none;
+    color: var(--text-2);
+    font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    resize: vertical;
+    outline: none;
+    tab-size: 2;
+  }
+
+  /* Save bar */
+  .save-bar {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 240px;
+    right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 10px 40px;
+    align-items: center;
+    gap: 10px;
+    z-index: 100;
+  }
+
+  .save-bar.active { display: flex; }
+
+  .save-bar input {
+    flex: 1;
+    padding: 7px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 13px;
+    font-family: var(--font);
+    outline: none;
+    transition: border-color var(--transition);
+  }
+
+  .save-bar input:focus { border-color: var(--accent); }
+
+  /* Toast */
+  .toast {
+    display: none;
+    position: fixed;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text);
+    color: var(--bg);
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 200;
+    animation: fadeUp 0.25s ease;
+  }
+
+  .toast.show { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+
+  /* Screens */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── Mobile ── */
+  .mobile-header {
+    display: none;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 60;
+  }
+
+  .hamburger {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 40;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      transform: translateX(-100%);
+      width: 280px;
+    }
+    .sidebar.open { transform: translateX(0); }
+    .overlay.open { display: block; }
+    .main { margin-left: 0; }
+    .mobile-header { display: flex; }
+    .page-header { padding: 20px 16px 16px; }
+    .content { padding: 0 16px; }
+    .file-header { padding: 16px 16px 12px; }
+    .file-row { padding: 10px 16px; }
+    .file-row .f-meta { display: none; }
+    .doc-toolbar { padding: 10px 16px; }
+    .doc-content { padding: 24px 16px 80px; }
+    .doc-content h1 { font-size: 24px; }
+    .editor-wrap { padding: 16px 16px 80px; }
+    .save-bar { left: 0; padding: 10px 16px; }
+    .repo-row .meta { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<div class="layout">
+  <!-- ── Sidebar ── -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo" onclick="goHome()">
+        <div class="logo-icon">R</div>
+        RepoSpace
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Repositories</div>
+      <div id="sidebar-repos"></div>
+    </div>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="sidebar-footer">
+      <div class="user-pill">
+        <div class="user-avatar">A</div>
+        <span class="user-name">alimazid</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Main ── -->
+  <div class="main">
+    <div class="mobile-header">
+      <button class="hamburger" onclick="toggleSidebar()">&#9776;</button>
+      <div class="logo" onclick="goHome()">
+        <div class="logo-icon">R</div>
+        RepoSpace
+      </div>
+      <div class="user-avatar" style="width:26px;height:26px;font-size:11px">A</div>
+    </div>
+
+    <!-- Screen: Repos -->
+    <div class="screen active" id="screen-repos">
+      <div class="page-header">
+        <h1>Repositories</h1>
+        <p>3 repositories connected</p>
+      </div>
+      <div class="content">
+        <div class="repo-grid" id="repo-list"></div>
+      </div>
+    </div>
+
+    <!-- Screen: Files -->
+    <div class="screen" id="screen-files">
+      <div class="branch-bar">
+        <div class="branch-select" id="branch-select">
+          <button class="branch-btn" onclick="toggleBranches(event)">
+            <span class="branch-icon">&#9411;</span>
+            <span id="current-branch">main</span>
+            <span class="arrow">&#9662;</span>
+          </button>
+          <div class="branch-dropdown" id="branch-dropdown">
+            <div class="branch-dropdown-header">Switch branch</div>
+            <input class="branch-search" id="branch-search" placeholder="Filter branches..." oninput="filterBranches(this.value)">
+            <div id="branch-options"></div>
+          </div>
+        </div>
+      </div>
+      <div class="view-tabs">
+        <button class="view-tab active" id="tab-files" onclick="switchTab('files')">&#128196; Files</button>
+        <button class="view-tab" id="tab-commits" onclick="switchTab('commits')">&#128340; Commits</button>
+      </div>
+      <div class="tab-divider"></div>
+      <div id="files-view">
+        <div class="file-header">
+          <div class="breadcrumb" id="breadcrumb"></div>
+          <span class="file-count" id="file-count"></span>
+        </div>
+        <div class="file-table" id="file-list"></div>
+      </div>
+      <div id="commits-view" style="display:none">
+        <div class="commit-list" id="commit-list"></div>
+      </div>
+    </div>
+
+    <!-- Screen: Document -->
+    <div class="screen" id="screen-doc">
+      <div class="doc-toolbar">
+        <div class="doc-toolbar-left">
+          <a class="back" id="doc-back">&#8592; Back</a>
+          <span class="doc-name" id="doc-filename"></span>
+        </div>
+        <div class="doc-toolbar-right">
+          <button class="btn" id="btn-raw">Source</button>
+          <button class="btn btn-primary" id="btn-edit">Edit</button>
+        </div>
+      </div>
+      <div class="doc-content" id="doc-viewer"></div>
+      <div class="editor-wrap" id="doc-editor">
+        <div class="editor-bar">
+          <button onclick="ins('**','**')"><b>B</b></button>
+          <button onclick="ins('_','_')"><i>I</i></button>
+          <button onclick="ins('## ','')">H2</button>
+          <button onclick="ins('[','](url)')">Link</button>
+          <button onclick="ins('`','`')">Code</button>
+          <button onclick="ins('- ','')">List</button>
+        </div>
+        <textarea class="editor-ta" id="editor-ta" spellcheck="true"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Save bar -->
+<div class="save-bar" id="save-bar">
+  <input type="text" id="commit-msg" placeholder="Commit message (optional)">
+  <button class="btn" id="btn-cancel">Cancel</button>
+  <button class="btn btn-primary" id="btn-save">Commit</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// Data
+// ═══════════════════════════════════════════════════════
+
+const REPOS = [
+  {
+    id: 'ascaribe-platform', name: 'ascaribe-platform', owner: 'alimazid',
+    desc: 'Company docs, websites, and AI agents project',
+    lang: 'TypeScript', langColor: '#3178c6', updated: '2h ago', activity: '5 today',
+    files: {
+      'JOURNAL.md': { type:'md', size:'12 KB', updated:'2h ago', badge:'agent' },
+      'company-docs/': { type:'folder', updated:'3d ago', children: {
+        'DGII-RNC.pdf': { type:'other', size:'450 KB', updated:'2w ago' },
+        'assembly-minutes.md': { type:'md', size:'3.2 KB', updated:'1w ago' },
+      }},
+      'projects/': { type:'folder', updated:'2h ago', children: {
+        'whatsapp-ai-agents/': { type:'folder', updated:'2h ago', children: {
+          'JOURNAL.md': { type:'md', size:'8.5 KB', updated:'2h ago', badge:'agent',
+            content: `# WhatsApp AI Agents — Project Journal\n\n## Timeline\n\n### 2026-02-16 — Architecture Finalized\n- Completed 20-module action plan\n- Defined 87 actions across 5 phases\n- Architecture V2 document approved by Ali\n\n### 2026-02-15 — Market Research\n- Google Trends analysis: "ChatGPT" dominates DR market (score 74)\n- "AI agent" is invisible — need to position as "Tu propio ChatGPT para tu negocio"\n- Pricing adjusted: $99 / $199 / $399 USD/month\n\n### 2026-02-14 — Cost Analysis\n- Margins per plan: Básico 93%, Pro 87%, Business 81%\n- Break-even: 1 client\n- Initial investment: ~$55\n\n## Key Decisions\n1. **Workflow pattern over autonomous agent** — more predictable, cheaper\n2. **No frameworks** (LangChain, AutoGen) — function calling nativo\n3. **Google Sheets: LLM interprets raw** — each client has different format\n4. **One OpenClaw multi-tenant** — NOT one VPS per client\n5. **Management = conversation** — zero learning curve for owners\n\n## Pending Actions\n- [ ] Set up Stripe with Ali's Wise USD account\n- [ ] Build Phase 1: Core (FAQ + alerts)\n- [ ] First pilot client onboarding\n- [ ] Create demo video for landing page\n\n## Completed Actions\n- [x] Architecture V1 and V2 documents\n- [x] Cost analysis with margin breakdown\n- [x] 20 modules and 87 actions defined\n- [x] System flows documented\n- [x] Product page at ascaribe.com/agentes-ai/\n- [x] Proposal PDF generated` },
+          'Pre-Project/': { type:'folder', updated:'1d ago', children: {
+            'arquitectura-v2.md': { type:'md', size:'15 KB', updated:'1d ago' },
+            'modulos-acciones.md': { type:'md', size:'9 KB', updated:'1d ago' },
+          }}
+        }}
+      }},
+      'websites/': { type:'folder', updated:'3d ago', children: {
+        'ascaribe/': { type:'folder', updated:'3d ago', children: {
+          'index.html': { type:'code', size:'28 KB', updated:'3d ago' },
+          'agentes-ai.html': { type:'code', size:'15 KB', updated:'3d ago' },
+        }},
+      }},
+      'README.md': { type:'md', size:'2.1 KB', updated:'1w ago',
+        content: `# ASCaribe Platform\n\nA & S Caribe Services and Technology SRL — Company repository.\n\n## Structure\n\n- **company-docs/** — Legal documents (DGII, ONAPI, RNC)\n- **projects/** — Active projects and documentation\n- **websites/** — Static websites (ascaribe.com)\n\n## Active Projects\n\n### WhatsApp AI Agents\nAI-powered WhatsApp assistants for Dominican businesses.\nStatus: Pre-project documentation complete.\n\n### CobraPago\nWhatsApp payment reminder bot for SMBs. Status: MVP live.\n\n### BusCarro\nWhatsApp car search bot. Status: Live and working.` },
+    }
+  },
+  {
+    id: 'fastloop-trader', name: 'fastloop-trader', owner: 'alimazid',
+    desc: 'Polymarket BTC fast market trader via Simmer API',
+    lang: 'Python', langColor: '#3572A5', updated: '30m ago', activity: '2 today',
+    files: {
+      'fastloop_trader.py': { type:'code', size:'30 KB', updated:'30m ago', badge:'agent' },
+      'config.json': { type:'json', size:'228 B', updated:'1h ago' },
+      'PLAN.md': { type:'md', size:'3.4 KB', updated:'2h ago',
+        content: `# FastLoop Trader — Plan de Implementación\n\n## Resumen\nPolymarket FastLoop Trader en Amsterdam para tradear BTC fast markets usando momentum de Binance.\n\n## Estado Actual\n\n### Completado\n- [x] Droplet Amsterdam creado (68.183.5.138)\n- [x] Bot instalado y configurado\n- [x] Venue Simmer ($SIM) para testing\n- [x] Cron cada 5 minutos activo\n- [x] Primer trade exitoso (+$9.71 SIM)\n- [x] Segundo trade exitoso (+$27.74 SIM)\n\n### Pendiente\n- [ ] Acumular 50+ trades para evaluar\n- [ ] Switch a Polymarket (USDC) si profitable` },
+      'README.md': { type:'md', size:'800 B', updated:'2h ago' },
+      '.gitignore': { type:'other', size:'60 B', updated:'2h ago' },
+    }
+  },
+  {
+    id: 'cobrapago-mvp', name: 'cobrapago-mvp', owner: 'alimazid',
+    desc: 'WhatsApp payment reminder bot for Dominican SMBs',
+    lang: 'TypeScript', langColor: '#3178c6', updated: '5d ago', activity: '',
+    files: {
+      'supabase/': { type:'folder', updated:'5d ago', children: {
+        'functions/': { type:'folder', updated:'5d ago', children: {
+          'whatsapp-webhook/': { type:'folder', updated:'5d ago', children: {
+            'index.ts': { type:'code', size:'8 KB', updated:'5d ago' },
+          }},
+        }},
+      }},
+      'README.md': { type:'md', size:'1.5 KB', updated:'2w ago' },
+    }
+  }
+];
+
+// ═══════════════════════════════════════════════════════
+// State
+// ═══════════════════════════════════════════════════════
+let currentRepo = null, currentPath = [], isEditing = false, originalContent = '', currentBranch = 'main', currentTab = 'files';
+
+// ═══════════════════════════════════════════════════════
+// Branches & Commits Data
+// ═══════════════════════════════════════════════════════
+const BRANCHES = {
+  'ascaribe-platform': [
+    { name: 'main', default: true, ahead: 0, behind: 0 },
+    { name: 'develop', default: false, ahead: 3, behind: 0 },
+    { name: 'feature/ai-agents-v2', default: false, ahead: 12, behind: 1 },
+    { name: 'fix/webhook-timeout', default: false, ahead: 1, behind: 0 },
+  ],
+  'fastloop-trader': [
+    { name: 'main', default: true, ahead: 0, behind: 0 },
+    { name: 'develop', default: false, ahead: 5, behind: 0 },
+    { name: 'experiment/weather-signals', default: false, ahead: 8, behind: 2 },
+  ],
+  'cobrapago-mvp': [
+    { name: 'main', default: true, ahead: 0, behind: 0 },
+    { name: 'develop', default: false, ahead: 2, behind: 0 },
+  ]
+};
+
+const COMMITS = {
+  'ascaribe-platform': {
+    'main': [
+      { sha: 'a3f8c21', msg: 'Update JOURNAL.md with architecture decisions', author: 'clawd', bot: true, time: '2 hours ago', date: 'Today', additions: 45, deletions: 3 },
+      { sha: 'b72e910', msg: 'Add AI agents product page', author: 'clawd', bot: true, time: '3 hours ago', date: 'Today', additions: 320, deletions: 0 },
+      { sha: 'e9d1f43', msg: 'Remove pricing section from agentes-ai.html', author: 'clawd', bot: true, time: '5 hours ago', date: 'Today', additions: 2, deletions: 48 },
+      { sha: '1c4ab78', msg: 'Fix mobile nav overflow on landing page', author: 'clawd', bot: true, time: '8 hours ago', date: 'Today', additions: 12, deletions: 8 },
+      { sha: '5fa2d66', msg: 'Deploy Macao Supply v3 with product pages', author: 'alimazid', bot: false, time: '1 day ago', date: 'Yesterday', additions: 1840, deletions: 620 },
+      { sha: '8bc3e01', msg: 'Add client logos section to Macao Supply', author: 'clawd', bot: true, time: '1 day ago', date: 'Yesterday', additions: 95, deletions: 10 },
+      { sha: 'd40f7a2', msg: 'Update company docs with DGII filing', author: 'alimazid', bot: false, time: '3 days ago', date: 'Feb 14', additions: 15, deletions: 2 },
+      { sha: '7e1c890', msg: 'Initial website structure and design system', author: 'alimazid', bot: false, time: '1 week ago', date: 'Feb 10', additions: 2400, deletions: 0 },
+    ],
+    'develop': [
+      { sha: 'f1a2b3c', msg: 'WIP: Multi-tenant webhook router', author: 'clawd', bot: true, time: '1 hour ago', date: 'Today', additions: 180, deletions: 20 },
+      { sha: 'c4d5e6f', msg: 'Add tenant config schema', author: 'clawd', bot: true, time: '3 hours ago', date: 'Today', additions: 95, deletions: 0 },
+      { sha: '9a8b7c6', msg: 'Scaffold Phase 1 module structure', author: 'clawd', bot: true, time: '5 hours ago', date: 'Today', additions: 240, deletions: 15 },
+      { sha: 'a3f8c21', msg: 'Update JOURNAL.md with architecture decisions', author: 'clawd', bot: true, time: '2 hours ago', date: 'Today', additions: 45, deletions: 3 },
+    ],
+    'feature/ai-agents-v2': [
+      { sha: 'aa11bb2', msg: 'Implement FAQ module with vector search', author: 'clawd', bot: true, time: '30 min ago', date: 'Today', additions: 310, deletions: 45 },
+      { sha: 'cc33dd4', msg: 'Add WhatsApp message handler', author: 'clawd', bot: true, time: '2 hours ago', date: 'Today', additions: 175, deletions: 20 },
+      { sha: 'ee55ff6', msg: 'Google Sheets integration for client data', author: 'clawd', bot: true, time: '4 hours ago', date: 'Today', additions: 220, deletions: 0 },
+    ]
+  },
+  'fastloop-trader': {
+    'main': [
+      { sha: '3b2a1f0', msg: 'Add reasoning parameter to Simmer trades', author: 'clawd', bot: true, time: '30 min ago', date: 'Today', additions: 8, deletions: 2 },
+      { sha: 'c8d7e6f', msg: 'Switch venue from polymarket to simmer for testing', author: 'clawd', bot: true, time: '1 hour ago', date: 'Today', additions: 15, deletions: 10 },
+      { sha: '4a5b6c7', msg: 'Add Simmer API market search as primary discovery', author: 'clawd', bot: true, time: '2 hours ago', date: 'Today', additions: 85, deletions: 12 },
+      { sha: '9f0e1d2', msg: 'Initial bot with Binance momentum strategy', author: 'alimazid', bot: false, time: '6 hours ago', date: 'Today', additions: 550, deletions: 0 },
+      { sha: 'a1b2c3d', msg: 'Add config.json and PLAN.md', author: 'alimazid', bot: false, time: '8 hours ago', date: 'Today', additions: 120, deletions: 0 },
+    ],
+    'develop': [
+      { sha: 'x1y2z3a', msg: 'Experiment: add volume-weighted momentum', author: 'clawd', bot: true, time: '20 min ago', date: 'Today', additions: 45, deletions: 12 },
+      { sha: 'b4c5d6e', msg: 'Add backtesting mode', author: 'clawd', bot: true, time: '1 hour ago', date: 'Today', additions: 200, deletions: 5 },
+      { sha: '3b2a1f0', msg: 'Add reasoning parameter to Simmer trades', author: 'clawd', bot: true, time: '30 min ago', date: 'Today', additions: 8, deletions: 2 },
+    ]
+  },
+  'cobrapago-mvp': {
+    'main': [
+      { sha: 'f1e2d3c', msg: 'Fix reminder timezone handling', author: 'clawd', bot: true, time: '5 days ago', date: 'Feb 12', additions: 18, deletions: 6 },
+      { sha: 'b4a5968', msg: 'Add process-reminders edge function', author: 'clawd', bot: true, time: '1 week ago', date: 'Feb 10', additions: 140, deletions: 0 },
+      { sha: '7c8d9e0', msg: 'Webhook handler for WhatsApp messages', author: 'alimazid', bot: false, time: '2 weeks ago', date: 'Feb 3', additions: 280, deletions: 0 },
+    ],
+    'develop': [
+      { sha: 'qq11rr2', msg: 'Add payment confirmation flow', author: 'clawd', bot: true, time: '5 days ago', date: 'Feb 12', additions: 95, deletions: 10 },
+      { sha: 'f1e2d3c', msg: 'Fix reminder timezone handling', author: 'clawd', bot: true, time: '5 days ago', date: 'Feb 12', additions: 18, deletions: 6 },
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+// Nav
+// ═══════════════════════════════════════════════════════
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('save-bar').classList.remove('active');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function goHome() {
+  currentRepo = null; currentPath = [];
+  show('screen-repos');
+  updateSidebar();
+  closeSidebar();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════
+// Sidebar
+// ═══════════════════════════════════════════════════════
+function updateSidebar() {
+  const el = document.getElementById('sidebar-repos');
+  el.innerHTML = REPOS.map(r => `
+    <div class="sidebar-item ${currentRepo?.id === r.id ? 'active' : ''}" onclick="openRepo('${r.id}');closeSidebar()">
+      <span class="dot" style="background:${r.langColor}"></span>
+      ${r.name}
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// Repos
+// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// Branches
+// ═══════════════════════════════════════════════════════
+function toggleBranches(e) {
+  e.stopPropagation();
+  const dd = document.getElementById('branch-dropdown');
+  dd.classList.toggle('open');
+  if (dd.classList.contains('open')) {
+    renderBranches();
+    document.getElementById('branch-search').value = '';
+    document.getElementById('branch-search').focus();
+  }
+}
+
+function renderBranches(filter = '') {
+  if (!currentRepo) return;
+  const branches = BRANCHES[currentRepo.id] || [];
+  const filtered = filter ? branches.filter(b => b.name.toLowerCase().includes(filter.toLowerCase())) : branches;
+  document.getElementById('branch-options').innerHTML = filtered.map(b => {
+    const isActive = b.name === currentBranch;
+    const meta = b.default ? 'default' : (b.ahead ? `${b.ahead} ahead` : '');
+    return `<div class="branch-option ${isActive ? 'active' : ''}" onclick="selectBranch('${b.name}')">
+      <span>${b.name}</span>
+      <span>${isActive ? '<span class="check-mark">&#10003;</span>' : `<span class="branch-meta">${meta}</span>`}</span>
+    </div>`;
+  }).join('');
+}
+
+function filterBranches(val) { renderBranches(val); }
+
+function selectBranch(name) {
+  currentBranch = name;
+  document.getElementById('current-branch').textContent = name;
+  document.getElementById('branch-dropdown').classList.remove('open');
+  if (currentTab === 'commits') renderCommits();
+  // In a real app, files would change per branch too
+  toast(`Switched to ${name}`);
+}
+
+// Close dropdown on outside click
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#branch-select')) {
+    document.getElementById('branch-dropdown')?.classList.remove('open');
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+// Tabs (Files / Commits)
+// ═══════════════════════════════════════════════════════
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-files').classList.toggle('active', tab === 'files');
+  document.getElementById('tab-commits').classList.toggle('active', tab === 'commits');
+  document.getElementById('files-view').style.display = tab === 'files' ? 'block' : 'none';
+  document.getElementById('commits-view').style.display = tab === 'commits' ? 'block' : 'none';
+  if (tab === 'commits') renderCommits();
+}
+
+function renderCommits() {
+  if (!currentRepo) return;
+  const allCommits = COMMITS[currentRepo.id]?.[currentBranch] || COMMITS[currentRepo.id]?.['main'] || [];
+
+  // Group by date
+  const groups = {};
+  allCommits.forEach(c => {
+    if (!groups[c.date]) groups[c.date] = [];
+    groups[c.date].push(c);
+  });
+
+  let html = '';
+  for (const [date, commits] of Object.entries(groups)) {
+    html += `<div class="commit-group-label">${date}</div>`;
+    commits.forEach(c => {
+      html += `<div class="commit-row" onclick="toast('Commit ${c.sha} details')">
+        <div class="commit-avatar ${c.bot ? 'bot' : ''}">${c.bot ? '&#9881;' : c.author[0].toUpperCase()}</div>
+        <div class="commit-info">
+          <div class="commit-msg">${c.msg}</div>
+          <div class="commit-detail">
+            <span class="author">${c.author}</span>
+            <span>committed ${c.time}</span>
+          </div>
+        </div>
+        <div class="commit-stats">
+          <span class="additions">+${c.additions}</span>
+          <span class="deletions">-${c.deletions}</span>
+        </div>
+        <span class="commit-sha" onclick="event.stopPropagation();navigator.clipboard?.writeText('${c.sha}');toast('Copied ${c.sha}')">${c.sha}</span>
+      </div>`;
+    });
+  }
+
+  document.getElementById('commit-list').innerHTML = html;
+}
+
+function renderRepos() {
+  document.getElementById('repo-list').innerHTML = REPOS.map(r => `
+    <div class="repo-row" onclick="openRepo('${r.id}')">
+      <div class="repo-icon">&#128193;</div>
+      <div class="info">
+        <div class="name">${r.owner}/${r.name}</div>
+        <div class="desc">${r.desc}</div>
+      </div>
+      <div class="meta">
+        ${r.activity ? `<span class="badge badge-blue">${r.activity}</span>` : ''}
+        <span class="lang"><span class="dot" style="background:${r.langColor}"></span>${r.lang}</span>
+        <span class="updated">${r.updated}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// Files
+// ═══════════════════════════════════════════════════════
+function openRepo(id) {
+  currentRepo = REPOS.find(r => r.id === id);
+  currentPath = [];
+  currentBranch = 'main';
+  currentTab = 'files';
+  document.getElementById('current-branch').textContent = 'main';
+  document.getElementById('tab-files').classList.add('active');
+  document.getElementById('tab-commits').classList.remove('active');
+  document.getElementById('files-view').style.display = 'block';
+  document.getElementById('commits-view').style.display = 'none';
+  renderFiles();
+  show('screen-files');
+  updateSidebar();
+}
+
+function getFiles() {
+  let n = currentRepo.files;
+  for (const s of currentPath) { const f = n[s+'/']; if (f?.children) n = f.children; }
+  return n;
+}
+
+function renderFiles() {
+  // Breadcrumb
+  let bc = `<a onclick="currentPath=[];renderFiles()">${currentRepo.name}</a>`;
+  currentPath.forEach((s, i) => {
+    bc += `<span class="sep">/</span>`;
+    bc += i < currentPath.length-1
+      ? `<a onclick="currentPath=currentPath.slice(0,${i+1});renderFiles()">${s}</a>`
+      : `<span class="current">${s}</span>`;
+  });
+  document.getElementById('breadcrumb').innerHTML = bc;
+
+  const files = getFiles();
+  const entries = Object.entries(files).map(([name, info]) => {
+    const isFolder = name.endsWith('/');
+    return { name: name.replace(/\/$/,''), raw: name, isFolder, ...info };
+  }).sort((a,b) => a.isFolder === b.isFolder ? a.name.localeCompare(b.name) : a.isFolder ? -1 : 1);
+
+  const folders = entries.filter(e => e.isFolder).length;
+  const filesCount = entries.length - folders;
+  document.getElementById('file-count').textContent = `${folders} folders, ${filesCount} files`;
+
+  document.getElementById('file-list').innerHTML = entries.map(e => {
+    let icon = '&#128196;';
+    if (e.isFolder) icon = '&#128194;';
+    else if (e.name.endsWith('.md')) icon = '&#128221;';
+    else if (/\.(ts|js|py|html)$/.test(e.name)) icon = '&#128187;';
+    else if (e.name.endsWith('.json')) icon = '{ }';
+
+    const click = e.isFolder
+      ? `currentPath.push('${e.name}');renderFiles()`
+      : `openFile('${e.raw}')`;
+
+    return `
+      <div class="file-row" onclick="${click}">
+        <span class="f-icon">${icon}</span>
+        <span class="f-name ${e.isFolder ? 'folder' : ''}">${e.name}${e.isFolder ? '/' : ''}</span>
+        ${e.badge ? '<span class="f-badge">agent</span>' : ''}
+        <span class="f-meta">${e.size || ''}</span>
+        <span class="f-time">${e.updated || ''}</span>
+      </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// Document
+// ═══════════════════════════════════════════════════════
+function openFile(filename) {
+  const files = getFiles();
+  const file = files[filename];
+  if (!file || (!filename.endsWith('.md') && !file.content)) {
+    toast('Preview not available'); return;
+  }
+  const content = file.content || `# ${filename}\n\nNo content.`;
+  originalContent = content;
+
+  document.getElementById('doc-filename').textContent = filename;
+  document.getElementById('doc-viewer').innerHTML =
+    `<div class="doc-meta"><span>Last edited ${file.updated}</span><span>${file.size}</span></div>` +
+    renderMd(content);
+  document.getElementById('doc-viewer').style.display = 'block';
+  document.getElementById('editor-ta').value = content;
+  document.getElementById('doc-editor').classList.remove('active');
+  document.getElementById('save-bar').classList.remove('active');
+  document.getElementById('btn-edit').textContent = 'Edit';
+  isEditing = false;
+  show('screen-doc');
+}
+
+function renderMd(md) {
+  return md
+    .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/^> (.+)$/gm, '<blockquote><p>$1</p></blockquote>')
+    .replace(/^- \[x\] (.+)$/gm, '<ul class="checklist"><li><span class="check done">&#9745;</span> $1</li></ul>')
+    .replace(/^- \[ \] (.+)$/gm, '<ul class="checklist"><li><span class="check">&#9744;</span> $1</li></ul>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
+    .replace(/^(?!<[hluopb])((?!<).+)$/gm, '<p>$1</p>')
+    .replace(/<\/ul>\s*<ul class="checklist">/g, '')
+    .replace(/<\/li>\n<li>/g, '</li><li>');
+}
+
+// Edit
+document.getElementById('btn-edit').addEventListener('click', () => {
+  isEditing = !isEditing;
+  if (isEditing) {
+    document.getElementById('doc-viewer').style.display = 'none';
+    document.getElementById('doc-editor').classList.add('active');
+    document.getElementById('save-bar').classList.add('active');
+    document.getElementById('btn-edit').textContent = 'Preview';
+    document.getElementById('editor-ta').focus();
+  } else {
+    document.getElementById('doc-viewer').innerHTML = renderMd(document.getElementById('editor-ta').value);
+    document.getElementById('doc-viewer').style.display = 'block';
+    document.getElementById('doc-editor').classList.remove('active');
+    document.getElementById('save-bar').classList.remove('active');
+    document.getElementById('btn-edit').textContent = 'Edit';
+  }
+});
+
+document.getElementById('btn-raw').addEventListener('click', () => {
+  if (isEditing) return;
+  const v = document.getElementById('doc-viewer');
+  if (v.dataset.raw === '1') {
+    v.innerHTML = renderMd(originalContent); v.dataset.raw = '0';
+  } else {
+    v.innerHTML = `<pre><code>${originalContent.replace(/</g,'&lt;')}</code></pre>`; v.dataset.raw = '1';
+  }
+});
+
+document.getElementById('btn-cancel').addEventListener('click', () => {
+  document.getElementById('editor-ta').value = originalContent;
+  isEditing = false;
+  document.getElementById('doc-viewer').innerHTML = renderMd(originalContent);
+  document.getElementById('doc-viewer').style.display = 'block';
+  document.getElementById('doc-editor').classList.remove('active');
+  document.getElementById('save-bar').classList.remove('active');
+  document.getElementById('btn-edit').textContent = 'Edit';
+});
+
+document.getElementById('btn-save').addEventListener('click', () => {
+  const content = document.getElementById('editor-ta').value;
+  const msg = document.getElementById('commit-msg').value || 'Update document';
+  originalContent = content;
+  isEditing = false;
+  document.getElementById('doc-viewer').innerHTML =
+    `<div class="doc-meta"><span>Last edited just now</span></div>` + renderMd(content);
+  document.getElementById('doc-viewer').style.display = 'block';
+  document.getElementById('doc-editor').classList.remove('active');
+  document.getElementById('save-bar').classList.remove('active');
+  document.getElementById('btn-edit').textContent = 'Edit';
+  toast(`Committed: "${msg}"`);
+});
+
+document.getElementById('doc-back').addEventListener('click', () => show('screen-files'));
+
+function ins(b, a) {
+  const ta = document.getElementById('editor-ta');
+  const s = ta.selectionStart, e = ta.selectionEnd, sel = ta.value.substring(s, e);
+  ta.value = ta.value.substring(0,s) + b + sel + a + ta.value.substring(e);
+  ta.focus(); ta.selectionStart = s+b.length; ta.selectionEnd = s+b.length+sel.length;
+}
+
+// Init
+renderRepos();
+updateSidebar();
+</script>
+</body>
+</html>
