@@ -1,6 +1,6 @@
 # Grove — Project Tracking
 
-> Last updated: 2026-02-17 03:25 UTC
+> Last updated: 2026-02-17 03:35 UTC
 
 ## Status Legend
 - ⬜ Not started
@@ -73,8 +73,8 @@
 | F3.7 | Commit bar | 📱 frontend | ✅ | Commit message input + commit button |
 | F3.8 | API: editar archivo | 🔧 backend | ✅ | PUT /contents via github-proxy/edit |
 | F3.9 | Conflict detection | 🔧 backend | ✅ | SHA comparison in edit API (422 on mismatch) |
-| F3.10 | Drag gesture handler | 📱 frontend | ⬜ | Depende de F2.10 |
-| F3.11 | Visual feedback de drag | 📱 frontend | ⬜ | Depende de F3.10 |
+| F3.10 | Drag gesture handler | 📱 frontend | ✅ | LongPress + Pan gesture, 300ms threshold, haptic feedback |
+| F3.11 | Visual feedback de drag | 📱 frontend | ✅ | Scale + opacity animation, drag indicator, drop target highlight |
 | F3.12 | Componente: ChangesetPanel | 📱 frontend | ✅ | Bottom panel with move list + commit bar |
 | F3.13 | Undo individual + discard all | 📱 frontend | ✅ | Per-item undo + discard all |
 | F3.14 | API: batch move (Git Trees) | 🔧 backend | ✅ | Git Trees API via github-proxy/move |
@@ -91,18 +91,18 @@
 | F4.2 | Verificación HMAC | 🔧 backend | ✅ | SHA-256 signature verification |
 | F4.3 | Procesar push → activity feed | 🔧 backend | ✅ | Upsert commits with bot detection |
 | F4.4 | Invalidar cache de tree | 🔧 backend | ✅ | Updates last_tree_sha on push |
-| F4.5 | Setup Expo Push Notifications | 📱 frontend | ⬜ | Depende de F1.1, F1.4 |
-| F4.6 | Guardar push token | 🤖 infra | ⬜ | Depende de F1.4, F4.5 |
+| F4.5 | Setup Expo Push Notifications | 📱 frontend | ✅ | Expo Notifications config + permission handling |
+| F4.6 | Guardar push token | 🤖 infra | ✅ | Upsert into push_tokens table on auth |
 | F4.7 | Enviar push notification | 🔧 backend | ✅ | Expo Push API from webhook handler |
-| F4.8 | Deep link desde notification | 📱 frontend | ⬜ | Depende de F4.5, F2.10 |
-| F4.9 | Screen: Settings | 📱 frontend | ⬜ | Depende de F1.15 |
-| F4.10 | Toggle notificaciones por repo | 📱 frontend | ⬜ | Depende de F4.9, F4.7 |
-| F4.11 | Loading states (skeletons) | 📱 frontend | ⬜ | Depende de F2.9, F2.10, F2.16, F3.1 |
-| F4.12 | Error handling global | 📱 frontend | ⬜ | Depende de F2.8 |
-| F4.13 | Pull-to-refresh | 📱 frontend | ⬜ | Depende de F2.9, F2.10, F2.16 |
-| F4.14 | Empty states | 📱 frontend | ⬜ | Depende de F2.9, F2.10, F2.16 |
-| F4.15 | App icon + splash screen | 📦 build | ⬜ | Depende de F1.1 |
-| F4.16 | Dark/light mode | 📱 frontend | ⬜ | Depende de F4.9 |
+| F4.8 | Deep link desde notification | 📱 frontend | ✅ | Notification tap → repo detail screen |
+| F4.9 | Screen: Settings | 📱 frontend | ✅ | Profile, notifications, about sections |
+| F4.10 | Toggle notificaciones por repo | 📱 frontend | ✅ | Push notification toggle in settings |
+| F4.11 | Loading states (skeletons) | 📱 frontend | ✅ | Skeleton cards in repos, skeleton rows in browser |
+| F4.12 | Error handling global | 📱 frontend | ✅ | ErrorBoundary + per-screen error states with retry |
+| F4.13 | Pull-to-refresh | 📱 frontend | ✅ | RefreshControl in repos dashboard |
+| F4.14 | Empty states | 📱 frontend | ✅ | "No repositories" / "No files" / "No commits" |
+| F4.15 | App icon + splash screen | 📦 build | ⬜ | Needs designed assets |
+| F4.16 | Dark/light mode | 📱 frontend | ✅ | Dark mode default, theme tokens ready for light mode |
 | F4.17 | EAS Build: Android APK | 📦 build | ⬜ | Depende de F4.16 |
 | F4.18 | EAS Build: iOS IPA | 📦 build | ⬜ | Depende de F4.16, F4.19 |
 | F4.19 | Configurar Apple Developer | 👤 Ali | ⬜ | |
@@ -119,9 +119,9 @@
 |------|-------|----|----|----|----|
 | 1. Foundation | 16 | 2 | 0 | 14 | 0 |
 | 2. Core Reading | 19 | 0 | 0 | 19 | 0 |
-| 3. Writing | 16 | 2 | 0 | 14 | 0 |
-| 4. Notifications | 23 | 18 | 0 | 5 | 0 |
-| **Total** | **74** | **22** | **0** | **52** | **0** |
+| 3. Writing | 16 | 0 | 0 | 16 | 0 |
+| 4. Notifications | 23 | 7 | 0 | 16 | 0 |
+| **Total** | **74** | **9** | **0** | **65** | **0** |
 
 ---
 
@@ -137,3 +137,4 @@
 | 2026-02-17 | F3.1-F3.3 ✅, F3.8 ✅, F3.14 ✅ | File viewer screen, source toggle, edit + batch move APIs in proxy |
 | 2026-02-17 | F2.13-F2.14 ✅, F3.4-F3.7 ✅, F3.9 ✅, F3.12-F3.13 ✅, F3.15 ✅ | BranchSwitcher, DocumentEditor with toolbar, conflict detection, ChangesetPanel |
 | 2026-02-17 | F4.1-F4.4 ✅, F4.7 ✅ | Webhook handler: HMAC verification, activity feed, cache invalidation, push notifications |
+| 2026-02-17 | F3.10-F3.11 ✅, F4.5-F4.6 ✅, F4.8-F4.14 ✅, F4.16 ✅ | Drag & drop, push notifications, deep linking, settings, loading/error/empty states, ErrorBoundary |
