@@ -1,7 +1,26 @@
-# RepoSpace — MVP Scope & Implementation Plan
+# Grove — MVP Scope & Implementation Plan
 
 > Fecha: 2026-02-17
 > Objetivo: App mobile funcional que permita autenticarse con GitHub, navegar repos, ver/editar archivos, ver commits, y mover archivos con drag & drop.
+
+---
+
+## 0. Design Source of Truth
+
+**La maqueta interactiva es la referencia de diseño para toda la app.**
+
+- **URL:** https://repospace-mockup.pages.dev
+- **Código fuente:** `/mockup/index.html`
+
+Todos los componentes de frontend DEBEN replicar fielmente:
+- **Color palette:** `--bg: #09090b`, `--surface: #18181b`, `--accent: #3b82f6`, `--green: #22c55e`, etc.
+- **Typography:** Inter font, sizes y weights del mockup
+- **Layout:** Sidebar en desktop, hamburger en mobile, same spacing/padding
+- **Components:** Repo cards, file rows, commit rows, branch dropdown, document viewer, editor, changeset panel, auth screens — todos deben ser visualmente idénticos a la maqueta
+- **Interactions:** Drag & drop behavior, long-press en mobile, toast notifications, skeleton loaders
+- **Dark mode** es el default (como la maqueta)
+
+Cualquier desviación del diseño de la maqueta requiere aprobación explícita de Ali.
 
 ---
 
@@ -72,17 +91,17 @@
 | ID | Tarea | Descripción | Asignado | Horas | Depende de |
 |----|-------|------------|----------|-------|-----------|
 | F1.1 | Crear proyecto Expo | Inicializar proyecto con Expo Router, TypeScript, ESLint, prettier. Configurar estructura de carpetas (app/, components/, lib/, store/). Agregar dependencias base: zustand, supabase-js, expo-router. | 🤖 infra | 2h | — |
-| F1.2 | Crear repo GitHub | Crear repo privado `alimazid/repospace`, configurar .gitignore, README, push initial commit. | 🤖 infra | 0.5h | — |
-| F1.3 | Crear proyecto Supabase | Crear nuevo proyecto "repospace" en Supabase (región East US). Obtener URL, anon key, service role key. Configurar en el proyecto Expo como variables de entorno. | 🤖 infra | 1h | — |
+| F1.2 | Crear repo GitHub | Crear repo privado `alimazid/grove`, configurar .gitignore, README, push initial commit. | 🤖 infra | 0.5h | — |
+| F1.3 | Crear proyecto Supabase | Crear nuevo proyecto "grove" en Supabase (región East US). Obtener URL, anon key, service role key. Configurar en el proyecto Expo como variables de entorno. | 🤖 infra | 1h | — |
 | F1.4 | Schema de base de datos | Escribir migraciones SQL para todas las tablas: users, connected_repos, activity_feed, tree_cache, notification_queue, push_tokens. Incluir índices y tipos. | 🤖 infra | 2h | F1.3 |
 | F1.5 | Row Level Security | Crear policies RLS para cada tabla. Cada usuario solo puede leer/escribir sus propios registros. Service role bypass para Edge Functions. | 🤖 infra | 1h | F1.4 |
 | F1.6 | Configurar EAS Build | Crear cuenta EAS, configurar eas.json con perfiles development/preview/production. Generar dev client para testing. | 🤖 infra | 1h | F1.1 |
-| F1.7 | Registrar GitHub App | Crear GitHub App en github.com/settings/apps/new. Configurar nombre "RepoSpace", permisos (contents r/w, metadata r), callback URL, webhook URL, logo. | 👤 Ali | 0.5h | F1.3 |
+| F1.7 | Registrar GitHub App | Crear GitHub App en github.com/settings/apps/new. Configurar nombre "Grove", permisos (contents r/w, metadata r), callback URL, webhook URL, logo. | 👤 Ali | 0.5h | F1.3 |
 | F1.8 | Configurar GitHub App URLs | Actualizar callback URL y webhook URL de la GitHub App con los endpoints reales de Supabase una vez creados. | 👤 Ali | 0.25h | F1.7, F1.10 |
 | F1.9 | Guardar credenciales GitHub App | Recibir de Ali: App ID, Client ID, Client Secret, Private Key (.pem). Almacenar como secrets en Supabase y en tokens.env local. | 🤖 infra | 0.25h | F1.7 |
 | F1.10 | Edge Function: github-auth | Implementar OAuth callback handler. Recibe `code` de GitHub, intercambia por access token, crea/actualiza usuario en Supabase Auth, almacena GitHub token encriptado en la DB. Retorna JWT de sesión. | 🔧 backend | 3h | F1.4, F1.9 |
 | F1.11 | Encriptación de tokens | Implementar capa de encriptación AES-256-GCM para GitHub tokens antes de almacenar en Postgres. Key derivada de SUPABASE_SERVICE_ROLE_KEY. Funciones encrypt/decrypt reutilizables. | 🔧 backend | 1h | F1.4 |
-| F1.12 | Pantalla de Login | Crear screen de login con branding RepoSpace, botón "Sign in with GitHub", features highlights. Adaptar diseño del mockup. Dark mode default. | 📱 frontend | 2h | F1.1 |
+| F1.12 | Design tokens + Pantalla de Login | **Primero:** Parsear el CSS del mockup (`/mockup/index.html`) y crear un theme file con todos los colores, tipografía, spacing, border-radius, y shadows — este archivo es la referencia para todos los componentes. **Luego:** Crear screen de login replicando exactamente el diseño de la pantalla `auth-login` del mockup: branding Grove, botón "Sign in with GitHub", 3 feature highlights, footer. Dark mode default. | 📱 frontend | 3h | F1.1 |
 | F1.13 | Flujo OAuth en la app | Implementar AuthSession de Expo para iniciar OAuth flow. Manejar deep link callback, recibir JWT de Supabase, almacenar sesión con SecureStore. Redirect a dashboard post-login. | 📱 frontend | 3h | F1.10, F1.12 |
 | F1.14 | Persistencia de sesión | Al abrir la app, verificar si hay sesión válida en SecureStore. Si existe y no expiró → skip login, ir directo a dashboard. Si expiró → refresh token. Si falla → mostrar login. | 📱 frontend | 1h | F1.13 |
 | F1.15 | Logout | Botón de logout en settings/perfil. Limpia sesión de SecureStore, limpia stores de Zustand, navega a pantalla de login. Opcionalmente revocar token en GitHub. | 📱 frontend | 0.5h | F1.14 |

@@ -1,18 +1,18 @@
-# RepoSpace — Epics & User Stories
+# Grove — Epics & User Stories
 
-> Derived from the interactive mockup at https://repospace-mockup.pages.dev
+> Derived from the interactive mockup at https://grove-mockup.pages.dev
 
 ---
 
 ## Epic 1: Authentication & Onboarding
 
-**Goal:** Users can sign in with GitHub and grant RepoSpace the necessary permissions to access their repositories.
+**Goal:** Users can sign in with GitHub and grant Grove the necessary permissions to access their repositories.
 
 | ID | Story | Acceptance Criteria | Priority |
 |----|-------|-------------------|----------|
-| 1.1 | As a new user, I can see a landing page that explains what RepoSpace does so I understand the value before signing in | Landing with headline, 3 feature highlights, CTA button | Must |
+| 1.1 | As a new user, I can see a landing page that explains what Grove does so I understand the value before signing in | Landing with headline, 3 feature highlights, CTA button | Must |
 | 1.2 | As a new user, I can sign in with my GitHub account using OAuth | "Sign in with GitHub" initiates OAuth flow, redirects to GitHub | Must |
-| 1.3 | As a user, I can see what permissions RepoSpace requests before authorizing | GitHub OAuth consent screen shows: read repos, write contents, read profile | Must |
+| 1.3 | As a user, I can see what permissions Grove requests before authorizing | GitHub OAuth consent screen shows: read repos, write contents, read profile | Must |
 | 1.4 | As a user, I can cancel authorization and return to the landing page | Cancel on GitHub consent → return to landing, no data stored | Must |
 | 1.5 | As a user, I see a loading sequence after authorizing so I know the app is working | 3-step animation: Authenticating → Loading repositories → Preparing workspace | Should |
 | 1.6 | As an authenticated user, I can sign out from the sidebar menu | Sign out clears session, returns to landing page | Must |
