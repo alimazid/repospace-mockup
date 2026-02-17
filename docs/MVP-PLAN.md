@@ -91,7 +91,7 @@ Cualquier desviación del diseño de la maqueta requiere aprobación explícita 
 | ID | Tarea | Descripción | Asignado | Horas | Depende de |
 |----|-------|------------|----------|-------|-----------|
 | F1.1 | Crear proyecto Expo | Inicializar proyecto con Expo Router, TypeScript, ESLint, prettier. Configurar estructura de carpetas (app/, components/, lib/, store/). Agregar dependencias base: zustand, supabase-js, expo-router. | 🤖 infra | 2h | — |
-| F1.2 | Crear repo GitHub | Crear repo privado `alimazid/grove`, configurar .gitignore, README, push initial commit. | 🤖 infra | 0.5h | — |
+| F1.2 | Crear repo GitHub | Crear repo privado `alimazid/grove-mvp`, configurar .gitignore, README, push initial commit. | 🤖 infra | 0.5h | — |
 | F1.3 | Crear proyecto Supabase | Crear nuevo proyecto "grove" en Supabase (región East US). Obtener URL, anon key, service role key. Configurar en el proyecto Expo como variables de entorno. | 🤖 infra | 1h | — |
 | F1.4 | Schema de base de datos | Escribir migraciones SQL para todas las tablas: users, connected_repos, activity_feed, tree_cache, notification_queue, push_tokens. Incluir índices y tipos. | 🤖 infra | 2h | F1.3 |
 | F1.5 | Row Level Security | Crear policies RLS para cada tabla. Cada usuario solo puede leer/escribir sus propios registros. Service role bypass para Edge Functions. | 🤖 infra | 1h | F1.4 |
