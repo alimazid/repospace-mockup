@@ -1,6 +1,6 @@
 # Grove — Project Tracking
 
-> Last updated: 2026-02-17 02:15 UTC
+> Last updated: 2026-02-17 02:35 UTC
 
 ## Status Legend
 - ⬜ Not started
@@ -24,8 +24,8 @@
 | F1.7 | Registrar GitHub App | 👤 Ali | ✅ | App ID: 2881352 |
 | F1.8 | Configurar GitHub App URLs | 👤 Ali | ⬜ | Depende de F1.7, F1.10 |
 | F1.9 | Guardar credenciales GitHub App | 🤖 infra | ✅ | Stored in ~/.secrets/ |
-| F1.10 | Edge Function: github-auth | 🔧 backend | ⬜ | Depende de F1.4, F1.9 |
-| F1.11 | Encriptación de tokens | 🔧 backend | ⬜ | Depende de F1.4 |
+| F1.10 | Edge Function: github-auth | 🔧 backend | ✅ | OAuth flow: login redirect + callback + user creation |
+| F1.11 | Encriptación de tokens | 🔧 backend | ✅ | AES-256-GCM with PBKDF2 key derivation |
 | F1.12 | Design tokens + Pantalla de Login | 📱 frontend | ✅ | Theme file + login screen matching mockup |
 | F1.13 | Flujo OAuth en la app | 📱 frontend | ⬜ | Depende de F1.10, F1.12 |
 | F1.14 | Persistencia de sesión | 📱 frontend | ⬜ | Depende de F1.13 |
@@ -117,11 +117,11 @@
 
 | Fase | Total | ⬜ | 🔵 | ✅ | 🔴 |
 |------|-------|----|----|----|----|
-| 1. Foundation | 16 | 8 | 0 | 8 | 0 |
+| 1. Foundation | 16 | 6 | 0 | 10 | 0 |
 | 2. Core Reading | 19 | 19 | 0 | 0 | 0 |
 | 3. Writing | 16 | 16 | 0 | 0 | 0 |
 | 4. Notifications | 23 | 23 | 0 | 0 | 0 |
-| **Total** | **74** | **66** | **0** | **8** | **0** |
+| **Total** | **74** | **64** | **0** | **10** | **0** |
 
 ---
 
@@ -131,3 +131,4 @@
 |------|-------|-------|
 | 2026-02-17 | F1.7 ✅, F1.9 ✅ | GitHub App "Grove" registered. Credentials stored in ~/.secrets/ |
 | 2026-02-17 | F1.1 ✅, F1.2 ✅, F1.3 ✅, F1.4 ✅, F1.5 ✅, F1.12 ✅ | Expo project scaffolded, repo created, Supabase provisioned, schema + RLS applied, design tokens + login screen built |
+| 2026-02-17 | F1.10 ✅, F1.11 ✅ | Token encryption (AES-256-GCM), github-auth Edge Function (OAuth login + callback + user upsert) |
