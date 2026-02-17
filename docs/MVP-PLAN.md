@@ -50,310 +50,234 @@
 
 ---
 
-## 3. Estructura del Proyecto
+## 3. Task Breakdown
 
-```
-repospace/
-├── app/                    # Expo Router screens
-│   ├── (auth)/             # Login, callback
-│   ├── (tabs)/             # Main tab navigator
-│   │   ├── repos/          # Repository list & detail
-│   │   ├── activity/       # Activity feed (v2)
-│   │   └── settings/       # User settings, logout
-│   └── _layout.tsx         # Root layout
-├── components/             # Shared components
-│   ├── FileBrowser/
-│   ├── DocumentViewer/
-│   ├── DocumentEditor/
-│   ├── CommitHistory/
-│   ├── BranchSwitcher/
-│   └── ChangesetPanel/
-├── lib/                    # Core logic
-│   ├── github/             # GitHub API client (GraphQL + REST)
-│   ├── supabase/           # Supabase client
-│   ├── cache/              # Local cache (SHA-based)
-│   └── notifications/      # Push notification handlers
-├── store/                  # Zustand stores
-├── supabase/
-│   ├── migrations/         # SQL migrations
-│   └── functions/          # Edge Functions
-│       ├── github-proxy/   # Proxy requests to GitHub API
-│       ├── github-webhook/ # Process incoming webhooks
-│       └── github-auth/    # OAuth callback handler
-└── assets/
-```
+### ID Convention
+- `F1.x` = Fase 1: Foundation
+- `F2.x` = Fase 2: Core Reading
+- `F3.x` = Fase 3: Writing
+- `F4.x` = Fase 4: Notifications & Polish
+
+### Assignee Legend
+- 🤖 **infra** = infra-agent (Supabase, config, CI/CD)
+- 🔧 **backend** = backend-agent (Edge Functions, GitHub API)
+- 📱 **frontend** = frontend-agent (React Native screens, components)
+- 📦 **build** = build-agent (EAS builds, assets)
+- 👤 **Ali** = Manual tasks + functional testing
 
 ---
 
-## 4. Plan de Implementación
-
 ### Fase 1: Foundation (Semana 1)
-> Infraestructura, auth, y conexión con GitHub.
 
-#### 1.1 — Setup del proyecto
-| # | Tarea | Asignado | Estimado |
-|---|-------|----------|----------|
-| 1.1.1 | Crear proyecto Expo con Expo Router, TypeScript, ESLint | Agente | 2h |
-| 1.1.2 | Configurar Supabase: nuevo proyecto "repospace" | Agente | 1h |
-| 1.1.3 | Crear schema de base de datos (migraciones SQL) | Agente | 2h |
-| 1.1.4 | Configurar Row Level Security (RLS) policies | Agente | 1h |
-| 1.1.5 | Crear repo GitHub `alimazid/repospace` (privado) | Agente | 15min |
-| 1.1.6 | Configurar EAS Build (dev client) | Agente | 1h |
-
-#### 1.2 — GitHub App Registration
-| # | Tarea | Asignado | Estimado |
-|---|-------|----------|----------|
-| 1.2.1 | Registrar GitHub App en github.com/settings/apps | **Ali** | 15min |
-| 1.2.2 | Configurar permisos: contents (r/w), metadata (r) | **Ali** | 10min |
-| 1.2.3 | Configurar callback URL → Supabase auth endpoint | **Ali** | 5min |
-| 1.2.4 | Configurar webhook URL → Edge Function | **Ali** | 5min |
-| 1.2.5 | Guardar App ID, Client ID, Client Secret, Private Key | **Ali** → Agente guarda en Supabase secrets |
-| 1.2.6 | Documentar credenciales en tokens.env | Agente | 5min |
-
-#### 1.3 — Autenticación
-| # | Tarea | Asignado | Estimado |
-|---|-------|----------|----------|
-| 1.3.1 | Edge Function: `github-auth` (OAuth callback, exchange code → token) | Agente | 3h |
-| 1.3.2 | Almacenar GitHub token encriptado en Supabase (Vault) | Agente | 1h |
-| 1.3.3 | Pantalla de Login en la app (UI + botón "Sign in with GitHub") | Agente | 2h |
-| 1.3.4 | Flujo OAuth: deep link callback → crear sesión Supabase | Agente | 3h |
-| 1.3.5 | Persistencia de sesión (auto-login en reopen) | Agente | 1h |
-| 1.3.6 | Logout (limpiar sesión, volver a login) | Agente | 30min |
-| 1.3.7 | **Prueba funcional**: Login → ver repos → logout → login de nuevo | **Ali** | 30min |
+| ID | Tarea | Descripción | Asignado | Horas | Depende de |
+|----|-------|------------|----------|-------|-----------|
+| F1.1 | Crear proyecto Expo | Inicializar proyecto con Expo Router, TypeScript, ESLint, prettier. Configurar estructura de carpetas (app/, components/, lib/, store/). Agregar dependencias base: zustand, supabase-js, expo-router. | 🤖 infra | 2h | — |
+| F1.2 | Crear repo GitHub | Crear repo privado `alimazid/repospace`, configurar .gitignore, README, push initial commit. | 🤖 infra | 0.5h | — |
+| F1.3 | Crear proyecto Supabase | Crear nuevo proyecto "repospace" en Supabase (región East US). Obtener URL, anon key, service role key. Configurar en el proyecto Expo como variables de entorno. | 🤖 infra | 1h | — |
+| F1.4 | Schema de base de datos | Escribir migraciones SQL para todas las tablas: users, connected_repos, activity_feed, tree_cache, notification_queue, push_tokens. Incluir índices y tipos. | 🤖 infra | 2h | F1.3 |
+| F1.5 | Row Level Security | Crear policies RLS para cada tabla. Cada usuario solo puede leer/escribir sus propios registros. Service role bypass para Edge Functions. | 🤖 infra | 1h | F1.4 |
+| F1.6 | Configurar EAS Build | Crear cuenta EAS, configurar eas.json con perfiles development/preview/production. Generar dev client para testing. | 🤖 infra | 1h | F1.1 |
+| F1.7 | Registrar GitHub App | Crear GitHub App en github.com/settings/apps/new. Configurar nombre "RepoSpace", permisos (contents r/w, metadata r), callback URL, webhook URL, logo. | 👤 Ali | 0.5h | F1.3 |
+| F1.8 | Configurar GitHub App URLs | Actualizar callback URL y webhook URL de la GitHub App con los endpoints reales de Supabase una vez creados. | 👤 Ali | 0.25h | F1.7, F1.10 |
+| F1.9 | Guardar credenciales GitHub App | Recibir de Ali: App ID, Client ID, Client Secret, Private Key (.pem). Almacenar como secrets en Supabase y en tokens.env local. | 🤖 infra | 0.25h | F1.7 |
+| F1.10 | Edge Function: github-auth | Implementar OAuth callback handler. Recibe `code` de GitHub, intercambia por access token, crea/actualiza usuario en Supabase Auth, almacena GitHub token encriptado en la DB. Retorna JWT de sesión. | 🔧 backend | 3h | F1.4, F1.9 |
+| F1.11 | Encriptación de tokens | Implementar capa de encriptación AES-256-GCM para GitHub tokens antes de almacenar en Postgres. Key derivada de SUPABASE_SERVICE_ROLE_KEY. Funciones encrypt/decrypt reutilizables. | 🔧 backend | 1h | F1.4 |
+| F1.12 | Pantalla de Login | Crear screen de login con branding RepoSpace, botón "Sign in with GitHub", features highlights. Adaptar diseño del mockup. Dark mode default. | 📱 frontend | 2h | F1.1 |
+| F1.13 | Flujo OAuth en la app | Implementar AuthSession de Expo para iniciar OAuth flow. Manejar deep link callback, recibir JWT de Supabase, almacenar sesión con SecureStore. Redirect a dashboard post-login. | 📱 frontend | 3h | F1.10, F1.12 |
+| F1.14 | Persistencia de sesión | Al abrir la app, verificar si hay sesión válida en SecureStore. Si existe y no expiró → skip login, ir directo a dashboard. Si expiró → refresh token. Si falla → mostrar login. | 📱 frontend | 1h | F1.13 |
+| F1.15 | Logout | Botón de logout en settings/perfil. Limpia sesión de SecureStore, limpia stores de Zustand, navega a pantalla de login. Opcionalmente revocar token en GitHub. | 📱 frontend | 0.5h | F1.14 |
+| F1.16 | **TEST: Auth flow** | Probar en dispositivo real: login con GitHub → ver repos → cerrar app → reabrir (auto-login) → logout → login de nuevo. Verificar que tokens se guardan correctamente. | 👤 Ali | 0.5h | F1.15 |
 
 ---
 
 ### Fase 2: Core Reading (Semana 2)
-> Navegar repos, archivos, branches, y commits.
 
-#### 2.1 — GitHub API Client
-| # | Tarea | Asignado | Estimado |
-|---|-------|----------|----------|
-| 2.1.1 | Edge Function: `github-proxy` (proxy autenticado a GitHub API) | Agente | 3h |
-| 2.1.2 | Query GraphQL: listar repos del usuario | Agente | 1h |
-| 2.1.3 | Query GraphQL: árbol de archivos (tree) por branch | Agente | 2h |
-| 2.1.4 | Query GraphQL: contenido de archivo | Agente | 1h |
-| 2.1.5 | Query GraphQL: listar branches | Agente | 1h |
-| 2.1.6 | Query GraphQL: historial de commits por branch | Agente | 2h |
-| 2.1.7 | Cache local por SHA (AsyncStorage + memoria) | Agente | 2h |
-
-#### 2.2 — Dashboard de Repos
-| # | Tarea | Asignado | Estimado |
-|---|-------|----------|----------|
-| 2.2.1 | Screen: lista de repos (nombre, descripción, lenguaje, última actividad) | Agente | 3h |
-| 2.2.2 | Pull-to-refresh para recargar repos | Agente | 30min |
-| 2.2.3 | Navegación: tap repo → file browser | Agente | 30min |
-
-#### 2.3 — File Browser
-| # | Tarea | Asignado | Estimado |
-|---|-------|----------|----------|
-| 2.3.1 | Componente: FileBrowser (lista de archivos/carpetas) | Agente | 3h |
-| 2.3.2 | Iconos por tipo de archivo (.md, .ts, .py, .json, folder, etc.) | Agente | 1h |
-| 2.3.3 | Navegación por carpetas con breadcrumbs | Agente | 2h |
-| 2.3.4 | Sort: folders first, luego archivos alfabéticos | Agente | 30min |
-| 2.3.5 | Badge "agent" en archivos con commits recientes de bots | Agente | 1h |
-
-#### 2.4 — Branch Switcher
-| # | Tarea | Asignado | Estimado |
-|---|-------|----------|----------|
-| 2.4.1 | Componente: BranchSwitcher (dropdown/bottom sheet) | Agente | 2h |
-| 2.4.2 | Filtro de branches por nombre | Agente | 30min |
-| 2.4.3 | Cambiar branch → recargar árbol y commits | Agente | 1h |
-
-#### 2.5 — Commit History
-| # | Tarea | Asignado | Estimado |
-|---|-------|----------|----------|
-| 2.5.1 | Componente: CommitHistory (lista agrupada por fecha) | Agente | 3h |
-| 2.5.2 | Diferenciar commits humano vs bot (avatar, estilo) | Agente | 1h |
-| 2.5.3 | Stats por commit (+additions / -deletions) | Agente | 30min |
-| 2.5.4 | Tab switcher: Files ↔ Commits | Agente | 1h |
-| 2.5.5 | **Prueba funcional**: Navegar repos, carpetas, branches, commits | **Ali** | 1h |
+| ID | Tarea | Descripción | Asignado | Horas | Depende de |
+|----|-------|------------|----------|-------|-----------|
+| F2.1 | Edge Function: github-proxy | Proxy genérico que recibe peticiones del cliente, extrae el GitHub token del usuario autenticado (desencripta), ejecuta la query/request contra GitHub API, y retorna la respuesta. Maneja errores (401 → reauth, 403 → rate limit, 404 → not found). | 🔧 backend | 3h | F1.10, F1.11 |
+| F2.2 | Query: listar repos | Implementar query GraphQL `viewer.repositories` que retorna: name, owner, description, primaryLanguage, pushedAt, defaultBranch, isPrivate. Paginación con cursor. Envolver en función reutilizable. | 🔧 backend | 1h | F2.1 |
+| F2.3 | Query: árbol de archivos | Implementar llamada a REST Git Trees API (`GET /repos/{owner}/{repo}/git/trees/{sha}?recursive=1`) para obtener árbol completo de un branch. Parsear respuesta en estructura jerárquica (folders → children). | 🔧 backend | 2h | F2.1 |
+| F2.4 | Query: contenido de archivo | Implementar query GraphQL `repository.object(expression: "{branch}:{path}")` para obtener contenido de un archivo. Decodificar Base64 si viene del REST endpoint. Soportar archivos hasta 1MB. | 🔧 backend | 1h | F2.1 |
+| F2.5 | Query: listar branches | Implementar query GraphQL `repository.refs(refPrefix: "refs/heads/")` que retorna nombre, commit SHA asociado, y si es default branch. Ordenar: default first, luego alfabético. | 🔧 backend | 1h | F2.1 |
+| F2.6 | Query: historial de commits | Implementar query GraphQL `repository.ref.target.history` con paginación. Retorna: SHA, message, author (login, avatarUrl), committedDate, additions, deletions. Incluir flag `is_bot` basado en author type o "[bot]" en nombre. | 🔧 backend | 2h | F2.1 |
+| F2.7 | Cache local por SHA | Implementar capa de cache con AsyncStorage. Trees se cachean por SHA (inmutable — nunca expiran). Contenido de archivos se cachea por blob SHA. Branches y repos se cachean con TTL de 5 min. Función `getCached(key)` / `setCached(key, data, ttl?)`. | 📱 frontend | 2h | F1.1 |
+| F2.8 | Zustand stores | Crear stores: `useRepoStore` (repos, selectedRepo), `useFileStore` (currentTree, currentPath, files), `useBranchStore` (branches, selectedBranch), `useCommitStore` (commits por branch). Acciones para fetch + cache integration. | 📱 frontend | 2h | F2.7 |
+| F2.9 | Screen: Dashboard de repos | Pantalla principal post-login. FlatList de repos con: icono, owner/name, descripción, lenguaje (dot color + nombre), tiempo desde último push. Pull-to-refresh. Tap → navega a file browser. Empty state si no hay repos. | 📱 frontend | 3h | F2.2, F2.8 |
+| F2.10 | Screen: File Browser | Pantalla de navegación de archivos. FlatList con filas: icono por tipo (📁📄📝💻), nombre, size, updated. Tap folder → push en navigation stack. Breadcrumbs arriba para navegar hacia atrás. Sort: folders first, luego files alfabéticos. | 📱 frontend | 3h | F2.3, F2.8 |
+| F2.11 | Iconos por tipo de archivo | Mapear extensiones a iconos: .md → documento, .ts/.js/.py/.html → código, .json → llaves, .yml → config, folders → carpeta. Usar iconos SVG o Expo vector icons. Colores por lenguaje (TypeScript azul, Python azul, etc). | 📱 frontend | 1h | F2.10 |
+| F2.12 | Badge "agent" | Detectar archivos con commits recientes de bots (basado en commit history o metadata). Mostrar badge verde "agent" al lado del nombre del archivo. Lógica: si el último commit que tocó el archivo tiene author.type === "Bot" o name includes "[bot]". | 📱 frontend | 1h | F2.10, F2.6 |
+| F2.13 | Componente: BranchSwitcher | Bottom sheet (o dropdown en web) que muestra lista de branches. Input de búsqueda para filtrar. Marca branch actual con checkmark. Marca default branch con label. Tap → cambia branch en store → recarga tree y commits. | 📱 frontend | 2h | F2.5, F2.8 |
+| F2.14 | Filtro de branches | Filtrado client-side por nombre de branch conforme el usuario escribe. Case-insensitive. Mostrar "No branches found" si no hay match. | 📱 frontend | 0.5h | F2.13 |
+| F2.15 | Cambiar branch → recargar | Al seleccionar un nuevo branch: (1) actualizar store, (2) fetch nuevo tree SHA para el branch, (3) si tree SHA cambió → fetch nuevo tree, (4) si estamos en tab commits → fetch commits del nuevo branch. Mostrar loading mientras carga. | 📱 frontend | 1h | F2.13 |
+| F2.16 | Componente: CommitHistory | FlatList de commits agrupados por fecha ("Today", "Yesterday", fecha). Cada fila: avatar (humano con inicial, bot con ícono ⚙️ en azul), mensaje, author login, timestamp relativo, +additions/-deletions en verde/rojo. SHA copiable con tap. | 📱 frontend | 3h | F2.6, F2.8 |
+| F2.17 | Diferenciar humano vs bot | Estilo visual distinto para commits de bot: avatar con fondo azul suave y ícono de gear vs avatar con inicial del autor y fondo gris. Basado en campo `is_bot` del query de commits. | 📱 frontend | 1h | F2.16 |
+| F2.18 | Tab switcher: Files ↔ Commits | Componente de tabs en la parte superior del file browser screen. Dos tabs: "Files" y "Commits". Cambia entre FileBrowser y CommitHistory. Mantiene estado al switchear (no re-fetcha si ya tiene data). Indicador visual de tab activo. | 📱 frontend | 1h | F2.10, F2.16 |
+| F2.19 | **TEST: Navegación completa** | Probar en dispositivo: ver dashboard → tap repo → navegar carpetas → cambiar branch → ver commits → copiar SHA → pull-to-refresh. Verificar que cache funciona (segunda visita es instantánea). | 👤 Ali | 1h | F2.18 |
 
 ---
 
 ### Fase 3: Writing (Semana 3)
-> Editar archivos, mover archivos, hacer commits.
 
-#### 3.1 — Document Viewer
-| # | Tarea | Asignado | Estimado |
-|---|-------|----------|----------|
-| 3.1.1 | Componente: DocumentViewer (Markdown renderizado) | Agente | 3h |
-| 3.1.2 | Toggle raw/source view | Agente | 1h |
-| 3.1.3 | Metadata: last edited, file size | Agente | 30min |
-| 3.1.4 | Back navigation al file browser | Agente | 30min |
-
-#### 3.2 — Document Editor
-| # | Tarea | Asignado | Estimado |
-|---|-------|----------|----------|
-| 3.2.1 | Componente: DocumentEditor (textarea con toolbar) | Agente | 3h |
-| 3.2.2 | Toolbar: Bold, Italic, H2, Link, Code, List | Agente | 2h |
-| 3.2.3 | Preview toggle (editor ↔ rendered) | Agente | 1h |
-| 3.2.4 | Commit bar: mensaje + botones save/cancel | Agente | 1h |
-| 3.2.5 | API write: PUT /contents/{path} con SHA + contenido | Agente | 2h |
-| 3.2.6 | Conflict detection: SHA mismatch → alerta al usuario | Agente | 2h |
-
-#### 3.3 — Drag & Drop + Changeset
-| # | Tarea | Asignado | Estimado |
-|---|-------|----------|----------|
-| 3.3.1 | Long-press + drag gesture en file browser (react-native-gesture-handler) | Agente | 4h |
-| 3.3.2 | Visual feedback: ghost element, folder highlighting | Agente | 2h |
-| 3.3.3 | Componente: ChangesetPanel (lista de cambios pendientes) | Agente | 2h |
-| 3.3.4 | Undo individual + discard all | Agente | 1h |
-| 3.3.5 | API write: Git Trees → crear tree → commit → update ref (batch move) | Agente | 4h |
-| 3.3.6 | Auto-generate commit message | Agente | 30min |
-| 3.3.7 | **Prueba funcional**: Editar archivo, mover archivos, verificar en GitHub | **Ali** | 1h |
+| ID | Tarea | Descripción | Asignado | Horas | Depende de |
+|----|-------|------------|----------|-------|-----------|
+| F3.1 | Componente: DocumentViewer | Pantalla de visualización de archivo. Renderiza Markdown usando react-native-markdown-display (o similar). Soporta: headers, bold, italic, code blocks, listas, checklists, blockquotes, links, tablas. Scroll vertical. Metadata arriba: last edited, file size. | 📱 frontend | 3h | F2.4, F2.10 |
+| F3.2 | Toggle raw/source | Botón "Source" en toolbar del viewer. Alterna entre Markdown renderizado y código fuente crudo en bloque monospace. Mantiene posición de scroll al cambiar. | 📱 frontend | 1h | F3.1 |
+| F3.3 | Back navigation | Botón "← Back" en toolbar que regresa al file browser en la misma carpeta donde estaba el usuario. Usa navigation.goBack() preservando el estado del store. | 📱 frontend | 0.5h | F3.1 |
+| F3.4 | Componente: DocumentEditor | Textarea con toolbar de formateo. Ocupa pantalla completa al entrar en modo edición. Keyboard-aware: se ajusta cuando aparece el teclado. Fuente monospace. Tab support (2 espacios). | 📱 frontend | 3h | F3.1 |
+| F3.5 | Toolbar de formateo | Barra horizontal con botones: Bold (**), Italic (*), H2 (##), Link ([]()), Code (``), List (- ). Cada botón inserta la sintaxis markdown alrededor del texto seleccionado o en la posición del cursor. Scroll horizontal si no caben todos. | 📱 frontend | 2h | F3.4 |
+| F3.6 | Preview toggle en editor | Botón para alternar entre editor (textarea) y preview (Markdown renderizado) mientras editas. Permite revisar cómo se ve antes de guardar. No pierde el contenido editado al cambiar. | 📱 frontend | 1h | F3.4, F3.1 |
+| F3.7 | Commit bar | Barra fija en la parte inferior al estar en modo edición. Contiene: input para commit message (placeholder auto-generado: "Update {filename}"), botón "Cancel" (descarta cambios), botón "Commit" (guarda). Se oculta al salir de edición. | 📱 frontend | 1h | F3.4 |
+| F3.8 | API: editar archivo | Implementar llamada REST `PUT /repos/{owner}/{repo}/contents/{path}` a través del github-proxy. Envía: nuevo contenido (Base64), commit message, SHA actual del archivo. Recibe: nuevo commit SHA. Actualiza cache local post-commit. | 🔧 backend | 2h | F2.1, F2.4 |
+| F3.9 | Conflict detection | Antes de guardar, comparar el SHA del archivo que se abrió vs el SHA actual en GitHub. Si difieren → alguien (agente u otro) editó el archivo mientras el usuario editaba. Mostrar alerta: "File was modified. Overwrite or cancel?" con opción de ver la versión actual. | 🔧 backend | 2h | F3.8 |
+| F3.10 | Drag gesture handler | Implementar long-press (300ms) + drag usando react-native-gesture-handler y react-native-reanimated. Al hacer long-press en un file row: vibración háptica, el item se eleva visualmente (shadow + scale), sigue el dedo del usuario. Detectar drop target por posición Y. | 📱 frontend | 4h | F2.10 |
+| F3.11 | Visual feedback de drag | Durante el drag: item original se atenúa (opacity 0.4), folders target se resaltan con borde azul al pasar encima, breadcrumbs se resaltan como drop targets alternativos. Ghost element flotan con el dedo. | 📱 frontend | 2h | F3.10 |
+| F3.12 | Componente: ChangesetPanel | Bottom sheet persistente que aparece cuando hay cambios pendientes. Muestra: contador de cambios, lista con cada movimiento (from → to con paths), botón undo por item (✕), botón "Discard all", input de commit message (auto-generado), botón "Commit changes". Expandible/collapsible. | 📱 frontend | 2h | F3.10 |
+| F3.13 | Undo individual + discard all | Cada item en el changeset tiene botón ✕ que lo remueve de la lista. "Discard all" limpia todo el changeset y oculta el panel. Confirmación antes de discard all si hay >3 cambios. | 📱 frontend | 1h | F3.12 |
+| F3.14 | API: batch move (Git Trees) | Implementar el flujo completo de mover archivos via Git API: (1) GET tree actual del branch, (2) Crear nuevo tree con paths actualizados (remove old + add new para cada move), (3) Crear commit apuntando al nuevo tree con base en HEAD, (4) Update ref del branch al nuevo commit. Todo atómico — un solo commit. | 🔧 backend | 4h | F2.1, F2.3 |
+| F3.15 | Auto-generate commit message | Generar mensaje de commit descriptivo basado en el changeset: 1 archivo → "Move {name} to {folder}", múltiples → "Move {n} files to new locations". Editable por el usuario antes de commit. | 📱 frontend | 0.5h | F3.12 |
+| F3.16 | **TEST: Edición y drag & drop** | Probar en dispositivo: abrir archivo .md → editar → commit → verificar en GitHub que el commit existe. Mover 2-3 archivos entre carpetas con drag & drop → commit changeset → verificar en GitHub. Probar conflict detection editando el mismo archivo desde GitHub web simultáneamente. | 👤 Ali | 1h | F3.15 |
 
 ---
 
 ### Fase 4: Notifications & Polish (Semana 4)
-> Webhooks, push notifications, pulir UX, preparar para beta.
 
-#### 4.1 — Webhooks + Push
-| # | Tarea | Asignado | Estimado |
-|---|-------|----------|----------|
-| 4.1.1 | Edge Function: `github-webhook` (recibir push events) | Agente | 3h |
-| 4.1.2 | Verificación de webhook signature (HMAC SHA-256) | Agente | 1h |
-| 4.1.3 | Procesar push event → insertar en activity_feed | Agente | 2h |
-| 4.1.4 | Invalidar cache de tree cuando llega push | Agente | 1h |
-| 4.1.5 | Integrar Expo Push Notifications | Agente | 3h |
-| 4.1.6 | Registrar push token del dispositivo en Supabase | Agente | 1h |
-| 4.1.7 | Enviar push notification cuando agente hace commit | Agente | 2h |
-| 4.1.8 | Pantalla de settings: toggle notificaciones por repo | Agente | 2h |
-
-#### 4.2 — Polish & UX
-| # | Tarea | Asignado | Estimado |
-|---|-------|----------|----------|
-| 4.2.1 | Loading states (skeletons) en todas las pantallas | Agente | 2h |
-| 4.2.2 | Error handling global (network, auth expired, rate limit) | Agente | 2h |
-| 4.2.3 | Pull-to-refresh en file browser y commits | Agente | 1h |
-| 4.2.4 | Empty states (repo sin archivos, sin commits, etc.) | Agente | 1h |
-| 4.2.5 | App icon + splash screen | Agente | 1h |
-| 4.2.6 | Dark mode (default) + light mode toggle | Agente | 2h |
-
-#### 4.3 — Build & Deploy
-| # | Tarea | Asignado | Estimado |
-|---|-------|----------|----------|
-| 4.3.1 | EAS Build: generar APK para Android (internal testing) | Agente | 1h |
-| 4.3.2 | EAS Build: generar IPA para iOS (TestFlight) | Agente | 1h |
-| 4.3.3 | Configurar Apple Developer account para TestFlight | **Ali** | 30min |
-| 4.3.4 | Subir a TestFlight para beta testing | **Ali** | 15min |
-| 4.3.5 | Subir APK a Google Play internal testing | **Ali** | 15min |
-| 4.3.6 | **Prueba funcional completa**: Flujo end-to-end en dispositivo real | **Ali** | 2h |
-| 4.3.7 | Fix bugs de testing | Agente | 4h |
+| ID | Tarea | Descripción | Asignado | Horas | Depende de |
+|----|-------|------------|----------|-------|-----------|
+| F4.1 | Edge Function: github-webhook | Endpoint que recibe webhook deliveries de GitHub. Valida signature (HMAC SHA-256 con webhook secret). Parsea evento `push`: extrae repo, branch, commits, author. Inserta registros en `activity_feed`. Retorna 200 OK rápido (procesamiento async si es necesario). | 🔧 backend | 3h | F1.4 |
+| F4.2 | Verificación HMAC | Implementar verificación de webhook signature. Calcular HMAC-SHA256 del body con el webhook secret, comparar con header `X-Hub-Signature-256`. Rechazar requests con signature inválida (401). Loggear intentos fallidos. | 🔧 backend | 1h | F4.1 |
+| F4.3 | Procesar push → activity feed | Al recibir push event: para cada commit en el payload, insertar en `activity_feed` con: commit SHA, author login, is_bot flag, message, files changed (con additions/deletions por archivo), branch, timestamp. Deduplicar por SHA si el webhook se re-envía. | 🔧 backend | 2h | F4.1 |
+| F4.4 | Invalidar cache de tree | Cuando llega un push event para un repo/branch: actualizar `last_tree_sha` en `connected_repos`, marcar tree_cache entries como stale. Enviar señal via Supabase Realtime para que clientes conectados re-fetchen el tree. | 🔧 backend | 1h | F4.1, F1.4 |
+| F4.5 | Setup Expo Push Notifications | Configurar expo-notifications en la app. Request permission al usuario. Obtener Expo Push Token. Registrar token en tabla `push_tokens` de Supabase asociado al user_id y device info. Manejar token refresh. | 📱 frontend | 3h | F1.1, F1.4 |
+| F4.6 | Guardar push token | Edge Function o insert directo: cuando la app obtiene un nuevo push token, upsert en tabla `push_tokens` (user_id, expo_token, platform, last_seen). Limpiar tokens viejos (>30 días sin actividad). | 🤖 infra | 1h | F1.4, F4.5 |
+| F4.7 | Enviar push notification | Cuando el webhook procesa un push event de un bot/agent: buscar push_tokens de los usuarios con ese repo conectado, enviar Expo Push Notification con: título = repo name, body = commit message, data = { repoId, branch, sha } para deep linking. Rate limit: max 1 push por repo por 5 minutos. | 🔧 backend | 2h | F4.1, F4.6 |
+| F4.8 | Deep link desde notification | Al tap en una push notification: abrir la app directamente en el file browser del repo y branch indicados en el payload. Si la app estaba cerrada → login automático (sesión persistente) → navegar al repo. | 📱 frontend | 2h | F4.5, F2.10 |
+| F4.9 | Screen: Settings | Pantalla de configuración accesible desde tab o menú. Secciones: perfil (avatar + username de GitHub), notificaciones (toggle global + toggle por repo), tema (dark/light), logout, versión de la app. | 📱 frontend | 2h | F1.15 |
+| F4.10 | Toggle notificaciones por repo | En settings, lista de repos conectados con toggle on/off para push notifications. Almacenar preferencia en tabla `connected_repos` o `user_preferences`. Al desactivar → no enviar push para ese repo. | 📱 frontend | 1h | F4.9, F4.7 |
+| F4.11 | Loading states (skeletons) | Agregar skeleton loaders en: dashboard (repo cards), file browser (file rows), commit history (commit rows), document viewer (text blocks). Usar librería como `react-native-skeleton-placeholder`. Mostrar mientras se cargan datos por primera vez. | 📱 frontend | 2h | F2.9, F2.10, F2.16, F3.1 |
+| F4.12 | Error handling global | Implementar error boundary y handler centralizado. Casos: (1) Network error → "No connection" banner, (2) Auth expired → redirect a login, (3) GitHub rate limit → "Try again in X minutes", (4) 404 → "File not found", (5) Generic → retry button. Toast para errores no-críticos. | 📱 frontend | 2h | F2.8 |
+| F4.13 | Pull-to-refresh | Agregar RefreshControl a: dashboard de repos, file browser, commit history. Al pull: re-fetch data ignorando cache (force refresh). Mostrar spinner de loading. | 📱 frontend | 1h | F2.9, F2.10, F2.16 |
+| F4.14 | Empty states | Diseñar e implementar pantallas empty state para: (1) Dashboard sin repos → "Connect your first repo", (2) Carpeta vacía → "This folder is empty", (3) Branch sin commits → "No commits yet", (4) Sin notificaciones → "All quiet". Ilustraciones simples + CTA cuando aplique. | 📱 frontend | 1h | F2.9, F2.10, F2.16 |
+| F4.15 | App icon + splash screen | Diseñar app icon (logo R sobre fondo azul) en los tamaños requeridos (1024x1024 base). Crear splash screen con logo centrado y fondo dark. Configurar en app.json. | 📦 build | 1h | F1.1 |
+| F4.16 | Dark/light mode | Implementar theme provider con dos temas: dark (default, colores del mockup) y light. Toggle en settings. Persistir preferencia en AsyncStorage. Todos los componentes usan tokens del tema (no colores hardcoded). | 📱 frontend | 2h | F4.9 |
+| F4.17 | EAS Build: Android APK | Configurar perfil de build para Android (preview). Ejecutar `eas build --platform android --profile preview`. Generar APK/AAB para internal testing. Verificar que la app funciona en emulador y dispositivo. | 📦 build | 1h | F4.16 |
+| F4.18 | EAS Build: iOS IPA | Configurar perfil de build para iOS (preview). Requiere Apple Developer certificate. Ejecutar `eas build --platform ios --profile preview`. Generar IPA para TestFlight. | 📦 build | 1h | F4.16, F4.19 |
+| F4.19 | Configurar Apple Developer | Configurar Apple Developer account para distribución. Crear App ID, provisioning profile. Necesario para TestFlight. | 👤 Ali | 0.5h | — |
+| F4.20 | Subir a TestFlight | Subir IPA generada por EAS a TestFlight via EAS Submit o manualmente. Invitar testers. | 👤 Ali | 0.25h | F4.18 |
+| F4.21 | Subir a Google Play internal | Subir AAB a Google Play Console como internal testing track. Configurar store listing mínimo. | 👤 Ali | 0.25h | F4.17 |
+| F4.22 | **TEST: E2E en dispositivo real** | Prueba completa end-to-end en iPhone y/o Android: instalar desde TestFlight/Play Store → login → navegar repos → cambiar branch → ver commits → abrir documento → editar y commit → mover archivos → recibir push notification cuando un agente hace push al repo → logout. Documentar bugs encontrados. | 👤 Ali | 2h | F4.21 |
+| F4.23 | Fix bugs de testing | Corregir bugs reportados por Ali durante las pruebas E2E. Priorizar por severidad: blockers primero, luego UX issues. Re-build y re-deploy. | 📱 frontend / 🔧 backend | 4h | F4.22 |
 
 ---
 
-## 5. Resumen de Asignación
-
-### Ali (Total: ~7h)
-
-| Tarea | Tiempo |
-|-------|--------|
-| Registrar GitHub App + configurar permisos/URLs | 35min |
-| Pasar credenciales (App ID, secrets, private key) | 10min |
-| Prueba funcional Fase 1: Auth flow | 30min |
-| Prueba funcional Fase 2: Navegación | 1h |
-| Prueba funcional Fase 3: Edición + drag & drop | 1h |
-| Configurar Apple Developer / Google Play accounts | 30min |
-| Subir builds a TestFlight + Play Store internal | 30min |
-| Prueba funcional Fase 4: E2E en dispositivo real | 2h |
-| **Total** | **~7h** |
-
-### Agente / Sub-agentes (Total: ~105h)
-
-| Fase | Horas |
-|------|-------|
-| Fase 1: Foundation | ~22h |
-| Fase 2: Core Reading | ~30h |
-| Fase 3: Writing | ~30h |
-| Fase 4: Notifications & Polish | ~27h |
-| **Total** | **~109h** |
-
-### Distribución por sub-agente
-
-| Sub-agente | Responsabilidad | Tareas |
-|-----------|----------------|--------|
-| **infra-agent** | Supabase setup, migrations, RLS, secrets, EAS config | 1.1.x, 1.2.6 |
-| **backend-agent** | Edge Functions (auth, proxy, webhook), GitHub API queries | 1.3.1-1.3.2, 2.1.x, 3.2.5-3.2.6, 3.3.5, 4.1.x |
-| **frontend-agent** | React Native screens, components, navigation, gestures | 1.3.3-1.3.6, 2.2.x, 2.3.x, 2.4.x, 2.5.x, 3.1.x, 3.2.1-3.2.4, 3.3.1-3.3.4, 3.3.6, 4.2.x |
-| **build-agent** | EAS builds, app icons, splash, CI/CD | 1.1.6, 4.2.5, 4.3.1-4.3.2 |
-
----
-
-## 6. Dependencias y Orden de Ejecución
+## 4. Dependency Graph
 
 ```
-Semana 1
-  ├── 1.1 Setup proyecto (Agente) ─────────────────────┐
-  ├── 1.2 GitHub App registration (Ali) ───────────────┤
-  │                                                     ▼
-  └── 1.3 Auth flow (Agente, depende de 1.1 + 1.2) ──► Ali prueba
-
-Semana 2
-  ├── 2.1 GitHub API client (Agente) ──────────────────┐
-  │                                                     ▼
-  ├── 2.2 Dashboard (Agente, depende de 2.1) ─────────┐
-  ├── 2.3 File Browser (Agente, depende de 2.1) ──────┤
-  ├── 2.4 Branch Switcher (Agente, depende de 2.1) ───┤
-  ├── 2.5 Commit History (Agente, depende de 2.1) ────┤
-  │                                                     ▼
-  └──────────────────────────────────────────────────► Ali prueba
-
-Semana 3
-  ├── 3.1 Document Viewer (Agente) ────────────────────┐
-  ├── 3.2 Document Editor (Agente, depende de 3.1) ───┤
-  ├── 3.3 Drag & Drop (Agente, depende de 2.3) ───────┤
-  │                                                     ▼
-  └──────────────────────────────────────────────────► Ali prueba
-
-Semana 4
-  ├── 4.1 Webhooks + Push (Agente) ────────────────────┐
-  ├── 4.2 Polish (Agente, paralelo) ──────────────────┤
-  ├── 4.3 Builds (Agente + Ali) ──────────────────────┤
-  │                                                     ▼
-  └──────────────────────────────────────────────────► Ali prueba E2E
+F1.1 ──────┬──► F1.6
+           ├──► F1.12 ──► F1.13 ──► F1.14 ──► F1.15 ──► F1.16 (Ali test)
+           ├──► F2.7 ──► F2.8 ──┬──► F2.9 ──────────────────┐
+           │                     ├──► F2.10 ─────────────────┤
+           │                     ├──► F2.13 ──► F2.14        │
+           │                     │              F2.15         │
+           │                     ├──► F2.16 ──► F2.17        │
+           │                     │              F2.18 ──────► F2.19 (Ali test)
+           │                     │                            │
+           │                     │    F3.1 ──┬──► F3.2       │
+           │                     │    │       ├──► F3.3       │
+           │                     │    │       └──► F3.4 ──┬──► F3.5
+           │                     │    │                    ├──► F3.6
+           │                     │    │                    └──► F3.7
+           │                     │    │                         │
+           │                     │    └──► F3.8 ──► F3.9       │
+           │                     │                              │
+           │                     └──► F3.10 ──► F3.11          │
+           │                              └──► F3.12 ──► F3.13 │
+           │                                   F3.14    F3.15  │
+           │                                          F3.16 (Ali test)
+           │                                                    │
+           └──► F4.5 ──► F4.8                                  │
+                F4.15                                           │
+                F4.11                                           │
+                F4.12                                           │
+                F4.16 ──► F4.17 ──► F4.21                      │
+                     └──► F4.18 ──► F4.20                      │
+                                                                │
+F1.2 (parallel)                                                │
+                                                                │
+F1.3 ──► F1.4 ──► F1.5                                        │
+              └──► F1.10 ──► F1.13                             │
+              │    F1.11 ──► F1.10                             │
+              └──► F2.1 ──┬──► F2.2 ──► F2.9                  │
+                          ├──► F2.3 ──► F2.10                  │
+                          ├──► F2.4 ──► F3.1                   │
+                          ├──► F2.5 ──► F2.13                  │
+                          ├──► F2.6 ──► F2.16                  │
+                          ├──► F3.8 ──► F3.9                   │
+                          └──► F3.14                           │
+                                                                │
+F1.7 (Ali) ──► F1.8 (Ali)                                     │
+          └──► F1.9                                            │
+                                                                │
+F4.1 ──► F4.2                                                  │
+    └──► F4.3                                                  │
+    └──► F4.4                                                  │
+    └──► F4.7 ──► F4.10                                       │
+                                                                │
+F4.6 ──► F4.7                                                  │
+F4.9 ──► F4.10, F4.16                                         │
+F4.19 (Ali) ──► F4.18                                          │
+                                                                ▼
+                                                    F4.22 (Ali test)
+                                                         │
+                                                         ▼
+                                                    F4.23 (bug fixes)
 ```
 
 ---
 
-## 7. Entregables por Semana
+## 5. Critical Path
 
-| Semana | Entregable | Demo |
-|--------|-----------|------|
-| 1 | App con login de GitHub funcional, ve lista de repos | Video/screenshot del auth flow |
-| 2 | Navegar archivos, cambiar branches, ver commits | Ali prueba en Expo Go |
-| 3 | Editar markdown, mover archivos, commits reales en GitHub | Ali edita un archivo real desde el teléfono |
-| 4 | Push notifications, polish, builds en TestFlight/Play Store | App instalada en el teléfono de Ali |
+La ruta más larga que determina la duración mínima del proyecto:
 
----
+```
+F1.3 → F1.4 → F1.10 → F1.13 → F1.14 → F2.1 → F2.3 → F2.10 → F3.10 → F3.12 → F3.14 → F3.16 → F4.22 → F4.23
+```
 
-## 8. Riesgos
-
-| Riesgo | Impacto | Mitigación |
-|--------|---------|-----------|
-| Deep linking OAuth falla en Expo Go | Bloquea auth | Usar dev client (EAS Build) desde día 1 |
-| GitHub rate limit en testing intensivo | Slows development | Cache agresivo + mock data para UI development |
-| Drag & drop complejo en React Native | Retrasa Fase 3 | Usar react-native-gesture-handler + reanimated (probados) |
-| Apple Developer review demora | Retrasa beta | Distribuir via TestFlight (no requiere review completo) |
-| Supabase Vault no disponible en plan actual | Tokens inseguros | Encriptar tokens con AES antes de guardar en Postgres |
+Cualquier retraso en estas tareas retrasa el MVP completo.
 
 ---
 
-## 9. Prerequisitos de Ali
+## 6. Resumen
 
-Antes de que los agentes arranquen, Ali necesita:
+| Métrica | Valor |
+|---------|-------|
+| Total de tareas | 62 |
+| Tareas de Ali | 8 (~7h) |
+| Tareas de agentes | 54 (~109h) |
+| Duración | 4 semanas |
+| Fases | 4 |
+| Tests funcionales | 4 (1 por fase) |
 
-- [ ] **Upgrade Supabase** (ya confirmado)
-- [ ] **Registrar GitHub App** en github.com/settings/apps/new
-  - Name: `RepoSpace`
-  - Homepage URL: `https://repospace.dev` (o placeholder)
-  - Callback URL: se definirá cuando tengamos el proyecto Supabase
-  - Permissions: Repository contents (Read & Write), Metadata (Read)
-  - Webhook: Active, URL se configurará después
-  - Where can this app be installed: "Any account"
-- [ ] **Compartir credenciales**: App ID, Client ID, Client Secret, Private Key (.pem)
-- [ ] **Apple Developer account** (para TestFlight en Semana 4)
-- [ ] **Google Play Console** (para internal testing en Semana 4)
+### Por asignado
+
+| Asignado | Tareas | Horas |
+|----------|--------|-------|
+| 🤖 infra-agent | 8 | ~9h |
+| 🔧 backend-agent | 13 | ~30h |
+| 📱 frontend-agent | 33 | ~56h |
+| 📦 build-agent | 3 | ~3h |
+| 👤 Ali | 8 | ~7h |
+
+---
+
+## 7. Prerequisitos de Ali
+
+Antes de que los agentes arranquen:
+
+- [ ] Upgrade Supabase (confirmado)
+- [ ] Registrar GitHub App (F1.7)
+- [ ] Compartir credenciales: App ID, Client ID, Client Secret, Private Key (F1.9)
+- [ ] Apple Developer account (F4.19, puede esperar hasta Semana 4)
+- [ ] Google Play Console (puede esperar hasta Semana 4)
 
 ---
 
