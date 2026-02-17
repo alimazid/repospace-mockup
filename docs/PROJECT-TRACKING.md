@@ -1,6 +1,6 @@
 # Grove — Project Tracking
 
-> Last updated: 2026-02-17 03:05 UTC
+> Last updated: 2026-02-17 03:25 UTC
 
 ## Status Legend
 - ⬜ Not started
@@ -50,8 +50,8 @@
 | F2.10 | Screen: File Browser | 📱 frontend | ✅ | Folder navigation, breadcrumbs, sorted entries |
 | F2.11 | Iconos por tipo de archivo | 📱 frontend | ✅ | 20+ extension → emoji mappings |
 | F2.12 | Badge "agent" | 📱 frontend | ✅ | Bot detection by login pattern, blue dot |
-| F2.13 | Componente: BranchSwitcher | 📱 frontend | ⬜ | Depende de F2.5, F2.8 |
-| F2.14 | Filtro de branches | 📱 frontend | ⬜ | Depende de F2.13 |
+| F2.13 | Componente: BranchSwitcher | 📱 frontend | ✅ | Bottom sheet modal with branch list |
+| F2.14 | Filtro de branches | 📱 frontend | ✅ | Search/filter in BranchSwitcher |
 | F2.15 | Cambiar branch → recargar | 📱 frontend | ✅ | switchBranch in store reloads tree |
 | F2.16 | Componente: CommitHistory | 📱 frontend | ✅ | Inline in repo detail screen |
 | F2.17 | Diferenciar humano vs bot | 📱 frontend | ✅ | Teal dot = human, blue dot = bot |
@@ -67,18 +67,18 @@
 | F3.1 | Componente: DocumentViewer | 📱 frontend | ✅ | File viewer screen with monospace rendering |
 | F3.2 | Toggle raw/source | 📱 frontend | ✅ | Source/Preview toggle for .md files |
 | F3.3 | Back navigation | 📱 frontend | ✅ | Router back from file viewer |
-| F3.4 | Componente: DocumentEditor | 📱 frontend | ⬜ | Depende de F3.1 |
-| F3.5 | Toolbar de formateo | 📱 frontend | ⬜ | Depende de F3.4 |
-| F3.6 | Preview toggle en editor | 📱 frontend | ⬜ | Depende de F3.4, F3.1 |
-| F3.7 | Commit bar | 📱 frontend | ⬜ | Depende de F3.4 |
+| F3.4 | Componente: DocumentEditor | 📱 frontend | ✅ | Full editor with save flow |
+| F3.5 | Toolbar de formateo | 📱 frontend | ✅ | Bold, italic, heading, code, list, checkbox |
+| F3.6 | Preview toggle en editor | 📱 frontend | ✅ | Edit/Preview toggle for .md files |
+| F3.7 | Commit bar | 📱 frontend | ✅ | Commit message input + commit button |
 | F3.8 | API: editar archivo | 🔧 backend | ✅ | PUT /contents via github-proxy/edit |
-| F3.9 | Conflict detection | 🔧 backend | ⬜ | Depende de F3.8 |
+| F3.9 | Conflict detection | 🔧 backend | ✅ | SHA comparison in edit API (422 on mismatch) |
 | F3.10 | Drag gesture handler | 📱 frontend | ⬜ | Depende de F2.10 |
 | F3.11 | Visual feedback de drag | 📱 frontend | ⬜ | Depende de F3.10 |
-| F3.12 | Componente: ChangesetPanel | 📱 frontend | ⬜ | Depende de F3.10 |
-| F3.13 | Undo individual + discard all | 📱 frontend | ⬜ | Depende de F3.12 |
+| F3.12 | Componente: ChangesetPanel | 📱 frontend | ✅ | Bottom panel with move list + commit bar |
+| F3.13 | Undo individual + discard all | 📱 frontend | ✅ | Per-item undo + discard all |
 | F3.14 | API: batch move (Git Trees) | 🔧 backend | ✅ | Git Trees API via github-proxy/move |
-| F3.15 | Auto-generate commit message | 📱 frontend | ⬜ | Depende de F3.12 |
+| F3.15 | Auto-generate commit message | 📱 frontend | ✅ | "Move X to Y" / "Move N files" |
 | F3.16 | **TEST: Edición y drag & drop** | 👤 Ali | ⬜ | Depende de F3.15 |
 
 ---
@@ -87,13 +87,13 @@
 
 | ID | Tarea | Asignado | Status | Notes |
 |----|-------|----------|--------|-------|
-| F4.1 | Edge Function: github-webhook | 🔧 backend | ⬜ | Depende de F1.4 |
-| F4.2 | Verificación HMAC | 🔧 backend | ⬜ | Depende de F4.1 |
-| F4.3 | Procesar push → activity feed | 🔧 backend | ⬜ | Depende de F4.1 |
-| F4.4 | Invalidar cache de tree | 🔧 backend | ⬜ | Depende de F4.1, F1.4 |
+| F4.1 | Edge Function: github-webhook | 🔧 backend | ✅ | Processes push + ping events |
+| F4.2 | Verificación HMAC | 🔧 backend | ✅ | SHA-256 signature verification |
+| F4.3 | Procesar push → activity feed | 🔧 backend | ✅ | Upsert commits with bot detection |
+| F4.4 | Invalidar cache de tree | 🔧 backend | ✅ | Updates last_tree_sha on push |
 | F4.5 | Setup Expo Push Notifications | 📱 frontend | ⬜ | Depende de F1.1, F1.4 |
 | F4.6 | Guardar push token | 🤖 infra | ⬜ | Depende de F1.4, F4.5 |
-| F4.7 | Enviar push notification | 🔧 backend | ⬜ | Depende de F4.1, F4.6 |
+| F4.7 | Enviar push notification | 🔧 backend | ✅ | Expo Push API from webhook handler |
 | F4.8 | Deep link desde notification | 📱 frontend | ⬜ | Depende de F4.5, F2.10 |
 | F4.9 | Screen: Settings | 📱 frontend | ⬜ | Depende de F1.15 |
 | F4.10 | Toggle notificaciones por repo | 📱 frontend | ⬜ | Depende de F4.9, F4.7 |
@@ -118,10 +118,10 @@
 | Fase | Total | ⬜ | 🔵 | ✅ | 🔴 |
 |------|-------|----|----|----|----|
 | 1. Foundation | 16 | 2 | 0 | 14 | 0 |
-| 2. Core Reading | 19 | 2 | 0 | 17 | 0 |
-| 3. Writing | 16 | 10 | 0 | 6 | 0 |
-| 4. Notifications | 23 | 23 | 0 | 0 | 0 |
-| **Total** | **74** | **37** | **0** | **37** | **0** |
+| 2. Core Reading | 19 | 0 | 0 | 19 | 0 |
+| 3. Writing | 16 | 2 | 0 | 14 | 0 |
+| 4. Notifications | 23 | 18 | 0 | 5 | 0 |
+| **Total** | **74** | **22** | **0** | **52** | **0** |
 
 ---
 
@@ -135,3 +135,5 @@
 | 2026-02-17 | F1.6 ✅, F1.13 ✅, F1.14 ✅, F1.15 ✅ | EAS Build config, OAuth flow in app (WebBrowser→Edge Function→deep link), session persistence, logout with confirmation |
 | 2026-02-17 | F2.1-F2.12 ✅, F2.15-F2.18 ✅ | Full backend proxy + all GraphQL queries, Zustand stores, repos dashboard, file browser with icons + breadcrumbs, commit history with bot detection |
 | 2026-02-17 | F3.1-F3.3 ✅, F3.8 ✅, F3.14 ✅ | File viewer screen, source toggle, edit + batch move APIs in proxy |
+| 2026-02-17 | F2.13-F2.14 ✅, F3.4-F3.7 ✅, F3.9 ✅, F3.12-F3.13 ✅, F3.15 ✅ | BranchSwitcher, DocumentEditor with toolbar, conflict detection, ChangesetPanel |
+| 2026-02-17 | F4.1-F4.4 ✅, F4.7 ✅ | Webhook handler: HMAC verification, activity feed, cache invalidation, push notifications |
