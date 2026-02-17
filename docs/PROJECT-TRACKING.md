@@ -1,6 +1,6 @@
 # Grove — Project Tracking
 
-> Last updated: 2026-02-17 03:35 UTC
+> Last updated: 2026-02-17 12:50 UTC
 
 ## Status Legend
 - ⬜ Not started
@@ -22,7 +22,7 @@
 | F1.5 | Row Level Security | 🤖 infra | ✅ | All tables RLS enabled |
 | F1.6 | Configurar EAS Build | 🤖 infra | ✅ | eas.json + deep link scheme configured |
 | F1.7 | Registrar GitHub App | 👤 Ali | ✅ | App ID: 2881352 |
-| F1.8 | Configurar GitHub App URLs | 👤 Ali | ⬜ | Depende de F1.7, F1.10 |
+| F1.8 | Configurar GitHub App URLs | 👤 Ali | ✅ | Callback URL configured |
 | F1.9 | Guardar credenciales GitHub App | 🤖 infra | ✅ | Stored in ~/.secrets/ |
 | F1.10 | Edge Function: github-auth | 🔧 backend | ✅ | OAuth flow: login redirect + callback + user creation |
 | F1.11 | Encriptación de tokens | 🔧 backend | ✅ | AES-256-GCM with PBKDF2 key derivation |
@@ -30,7 +30,7 @@
 | F1.13 | Flujo OAuth en la app | 📱 frontend | ✅ | WebBrowser → Edge Function → deep link callback |
 | F1.14 | Persistencia de sesión | 📱 frontend | ✅ | SecureStore + auto-refresh + onAuthStateChange |
 | F1.15 | Logout | 📱 frontend | ✅ | Confirmation dialog + redirect to login |
-| F1.16 | **TEST: Auth flow** | 👤 Ali | ⬜ | Depende de F1.15 |
+| F1.16 | **TEST: Auth flow** | 👤 Ali | ✅ | Login, session persist, logout all working |
 
 ---
 
@@ -56,7 +56,7 @@
 | F2.16 | Componente: CommitHistory | 📱 frontend | ✅ | Inline in repo detail screen |
 | F2.17 | Diferenciar humano vs bot | 📱 frontend | ✅ | Teal dot = human, blue dot = bot |
 | F2.18 | Tab switcher: Files ↔ Commits | 📱 frontend | ✅ | Active tab indicator |
-| F2.19 | **TEST: Navegación completa** | 👤 Ali | ⬜ | Depende de F2.18 |
+| F2.19 | **TEST: Navegación completa** | 👤 Ali | ✅ | Repos, files, branches, commits all working |
 
 ---
 
@@ -79,7 +79,7 @@
 | F3.13 | Undo individual + discard all | 📱 frontend | ✅ | Per-item undo + discard all |
 | F3.14 | API: batch move (Git Trees) | 🔧 backend | ✅ | Git Trees API via github-proxy/move |
 | F3.15 | Auto-generate commit message | 📱 frontend | ✅ | "Move X to Y" / "Move N files" |
-| F3.16 | **TEST: Edición y drag & drop** | 👤 Ali | ⬜ | Depende de F3.15 |
+| F3.16 | **TEST: Edición y drag & drop** | 👤 Ali | ✅ | Edit + commit working from iPhone |
 
 ---
 
@@ -101,7 +101,7 @@
 | F4.12 | Error handling global | 📱 frontend | ✅ | ErrorBoundary + per-screen error states with retry |
 | F4.13 | Pull-to-refresh | 📱 frontend | ✅ | RefreshControl in repos dashboard |
 | F4.14 | Empty states | 📱 frontend | ✅ | "No repositories" / "No files" / "No commits" |
-| F4.15 | App icon + splash screen | 📦 build | ⬜ | Needs designed assets |
+| F4.15 | App icon + splash screen | 📦 build | ✅ | Git tree icon, dark bg, blue accent |
 | F4.16 | Dark/light mode | 📱 frontend | ✅ | Dark mode default, theme tokens ready for light mode |
 | F4.17 | EAS Build: Android APK | 📦 build | ⬜ | Depende de F4.16 |
 | F4.18 | EAS Build: iOS IPA | 📦 build | ⬜ | Depende de F4.16, F4.19 |
@@ -117,11 +117,11 @@
 
 | Fase | Total | ⬜ | 🔵 | ✅ | 🔴 |
 |------|-------|----|----|----|----|
-| 1. Foundation | 16 | 2 | 0 | 14 | 0 |
+| 1. Foundation | 16 | 0 | 0 | 16 | 0 |
 | 2. Core Reading | 19 | 0 | 0 | 19 | 0 |
 | 3. Writing | 16 | 0 | 0 | 16 | 0 |
-| 4. Notifications | 23 | 7 | 0 | 16 | 0 |
-| **Total** | **74** | **9** | **0** | **65** | **0** |
+| 4. Notifications | 23 | 4 | 0 | 19 | 0 |
+| **Total** | **74** | **4** | **0** | **70** | **0** |
 
 ---
 
