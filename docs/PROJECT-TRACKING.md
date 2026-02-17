@@ -1,6 +1,6 @@
 # Grove — Project Tracking
 
-> Last updated: 2026-02-17 02:45 UTC
+> Last updated: 2026-02-17 03:05 UTC
 
 ## Status Legend
 - ⬜ Not started
@@ -38,24 +38,24 @@
 
 | ID | Tarea | Asignado | Status | Notes |
 |----|-------|----------|--------|-------|
-| F2.1 | Edge Function: github-proxy | 🔧 backend | ⬜ | Depende de F1.10, F1.11 |
-| F2.2 | Query: listar repos | 🔧 backend | ⬜ | Depende de F2.1 |
-| F2.3 | Query: árbol de archivos | 🔧 backend | ⬜ | Depende de F2.1 |
-| F2.4 | Query: contenido de archivo | 🔧 backend | ⬜ | Depende de F2.1 |
-| F2.5 | Query: listar branches | 🔧 backend | ⬜ | Depende de F2.1 |
-| F2.6 | Query: historial de commits | 🔧 backend | ⬜ | Depende de F2.1 |
-| F2.7 | Cache local por SHA | 📱 frontend | ⬜ | Depende de F1.1 |
-| F2.8 | Zustand stores | 📱 frontend | ⬜ | Depende de F2.7 |
-| F2.9 | Screen: Dashboard de repos | 📱 frontend | ⬜ | Depende de F2.2, F2.8 |
-| F2.10 | Screen: File Browser | 📱 frontend | ⬜ | Depende de F2.3, F2.8 |
-| F2.11 | Iconos por tipo de archivo | 📱 frontend | ⬜ | Depende de F2.10 |
-| F2.12 | Badge "agent" | 📱 frontend | ⬜ | Depende de F2.10, F2.6 |
+| F2.1 | Edge Function: github-proxy | 🔧 backend | ✅ | Authenticated proxy with 7 routes |
+| F2.2 | Query: listar repos | 🔧 backend | ✅ | GraphQL viewer.repositories |
+| F2.3 | Query: árbol de archivos | 🔧 backend | ✅ | GraphQL Tree query by expression |
+| F2.4 | Query: contenido de archivo | 🔧 backend | ✅ | GraphQL Blob query |
+| F2.5 | Query: listar branches | 🔧 backend | ✅ | GraphQL refs query |
+| F2.6 | Query: historial de commits | 🔧 backend | ✅ | GraphQL commit history with pagination |
+| F2.7 | Cache local por SHA | 📱 frontend | ✅ | API client with typed responses |
+| F2.8 | Zustand stores | 📱 frontend | ✅ | repos + browser stores |
+| F2.9 | Screen: Dashboard de repos | 📱 frontend | ✅ | Cards, skeletons, pull-to-refresh, pagination |
+| F2.10 | Screen: File Browser | 📱 frontend | ✅ | Folder navigation, breadcrumbs, sorted entries |
+| F2.11 | Iconos por tipo de archivo | 📱 frontend | ✅ | 20+ extension → emoji mappings |
+| F2.12 | Badge "agent" | 📱 frontend | ✅ | Bot detection by login pattern, blue dot |
 | F2.13 | Componente: BranchSwitcher | 📱 frontend | ⬜ | Depende de F2.5, F2.8 |
 | F2.14 | Filtro de branches | 📱 frontend | ⬜ | Depende de F2.13 |
-| F2.15 | Cambiar branch → recargar | 📱 frontend | ⬜ | Depende de F2.13 |
-| F2.16 | Componente: CommitHistory | 📱 frontend | ⬜ | Depende de F2.6, F2.8 |
-| F2.17 | Diferenciar humano vs bot | 📱 frontend | ⬜ | Depende de F2.16 |
-| F2.18 | Tab switcher: Files ↔ Commits | 📱 frontend | ⬜ | Depende de F2.10, F2.16 |
+| F2.15 | Cambiar branch → recargar | 📱 frontend | ✅ | switchBranch in store reloads tree |
+| F2.16 | Componente: CommitHistory | 📱 frontend | ✅ | Inline in repo detail screen |
+| F2.17 | Diferenciar humano vs bot | 📱 frontend | ✅ | Teal dot = human, blue dot = bot |
+| F2.18 | Tab switcher: Files ↔ Commits | 📱 frontend | ✅ | Active tab indicator |
 | F2.19 | **TEST: Navegación completa** | 👤 Ali | ⬜ | Depende de F2.18 |
 
 ---
@@ -64,20 +64,20 @@
 
 | ID | Tarea | Asignado | Status | Notes |
 |----|-------|----------|--------|-------|
-| F3.1 | Componente: DocumentViewer | 📱 frontend | ⬜ | Depende de F2.4, F2.10 |
-| F3.2 | Toggle raw/source | 📱 frontend | ⬜ | Depende de F3.1 |
-| F3.3 | Back navigation | 📱 frontend | ⬜ | Depende de F3.1 |
+| F3.1 | Componente: DocumentViewer | 📱 frontend | ✅ | File viewer screen with monospace rendering |
+| F3.2 | Toggle raw/source | 📱 frontend | ✅ | Source/Preview toggle for .md files |
+| F3.3 | Back navigation | 📱 frontend | ✅ | Router back from file viewer |
 | F3.4 | Componente: DocumentEditor | 📱 frontend | ⬜ | Depende de F3.1 |
 | F3.5 | Toolbar de formateo | 📱 frontend | ⬜ | Depende de F3.4 |
 | F3.6 | Preview toggle en editor | 📱 frontend | ⬜ | Depende de F3.4, F3.1 |
 | F3.7 | Commit bar | 📱 frontend | ⬜ | Depende de F3.4 |
-| F3.8 | API: editar archivo | 🔧 backend | ⬜ | Depende de F2.1, F2.4 |
+| F3.8 | API: editar archivo | 🔧 backend | ✅ | PUT /contents via github-proxy/edit |
 | F3.9 | Conflict detection | 🔧 backend | ⬜ | Depende de F3.8 |
 | F3.10 | Drag gesture handler | 📱 frontend | ⬜ | Depende de F2.10 |
 | F3.11 | Visual feedback de drag | 📱 frontend | ⬜ | Depende de F3.10 |
 | F3.12 | Componente: ChangesetPanel | 📱 frontend | ⬜ | Depende de F3.10 |
 | F3.13 | Undo individual + discard all | 📱 frontend | ⬜ | Depende de F3.12 |
-| F3.14 | API: batch move (Git Trees) | 🔧 backend | ⬜ | Depende de F2.1, F2.3 |
+| F3.14 | API: batch move (Git Trees) | 🔧 backend | ✅ | Git Trees API via github-proxy/move |
 | F3.15 | Auto-generate commit message | 📱 frontend | ⬜ | Depende de F3.12 |
 | F3.16 | **TEST: Edición y drag & drop** | 👤 Ali | ⬜ | Depende de F3.15 |
 
@@ -118,10 +118,10 @@
 | Fase | Total | ⬜ | 🔵 | ✅ | 🔴 |
 |------|-------|----|----|----|----|
 | 1. Foundation | 16 | 2 | 0 | 14 | 0 |
-| 2. Core Reading | 19 | 19 | 0 | 0 | 0 |
-| 3. Writing | 16 | 16 | 0 | 0 | 0 |
+| 2. Core Reading | 19 | 2 | 0 | 17 | 0 |
+| 3. Writing | 16 | 10 | 0 | 6 | 0 |
 | 4. Notifications | 23 | 23 | 0 | 0 | 0 |
-| **Total** | **74** | **60** | **0** | **14** | **0** |
+| **Total** | **74** | **37** | **0** | **37** | **0** |
 
 ---
 
@@ -133,3 +133,5 @@
 | 2026-02-17 | F1.1 ✅, F1.2 ✅, F1.3 ✅, F1.4 ✅, F1.5 ✅, F1.12 ✅ | Expo project scaffolded, repo created, Supabase provisioned, schema + RLS applied, design tokens + login screen built |
 | 2026-02-17 | F1.10 ✅, F1.11 ✅ | Token encryption (AES-256-GCM), github-auth Edge Function (OAuth login + callback + user upsert) |
 | 2026-02-17 | F1.6 ✅, F1.13 ✅, F1.14 ✅, F1.15 ✅ | EAS Build config, OAuth flow in app (WebBrowser→Edge Function→deep link), session persistence, logout with confirmation |
+| 2026-02-17 | F2.1-F2.12 ✅, F2.15-F2.18 ✅ | Full backend proxy + all GraphQL queries, Zustand stores, repos dashboard, file browser with icons + breadcrumbs, commit history with bot detection |
+| 2026-02-17 | F3.1-F3.3 ✅, F3.8 ✅, F3.14 ✅ | File viewer screen, source toggle, edit + batch move APIs in proxy |
