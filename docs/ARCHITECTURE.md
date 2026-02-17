@@ -1,4 +1,4 @@
-# RepoSpace — Arquitectura de Alto Nivel
+# Grove — Arquitectura de Alto Nivel
 
 > App mobile-first para navegar, editar y gestionar repositorios de GitHub, diseñada para el flujo humano-agente.
 
@@ -6,7 +6,7 @@
 
 ## 1. Visión del Producto
 
-RepoSpace es una app mobile-first que convierte repositorios de GitHub en workspaces navegables y editables, optimizados para supervisar el trabajo de agentes de IA. El usuario principal consume contenido desde su teléfono: revisa cambios, edita documentos, mueve archivos y hace commits — sin necesidad de conocer git.
+Grove es una app mobile-first que convierte repositorios de GitHub en workspaces navegables y editables, optimizados para supervisar el trabajo de agentes de IA. El usuario principal consume contenido desde su teléfono: revisa cambios, edita documentos, mueve archivos y hace commits — sin necesidad de conocer git.
 
 ---
 
@@ -160,7 +160,7 @@ Usamos **GitHub App** en vez de OAuth App. Razones:
 ### Flujo de autenticación
 
 ```
-Usuario                    RepoSpace                  GitHub
+Usuario                    Grove                  GitHub
   │                           │                          │
   ├── Tap "Sign in" ─────────►│                          │
   │                           ├── Redirect ──────────────►│
