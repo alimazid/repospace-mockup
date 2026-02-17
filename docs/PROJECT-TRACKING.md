@@ -15,18 +15,18 @@
 
 | ID | Tarea | Asignado | Status | Notes |
 |----|-------|----------|--------|-------|
-| F1.1 | Crear proyecto Expo | 🤖 infra | ⬜ | |
-| F1.2 | Crear repo GitHub `grove-mvp` | 🤖 infra | ⬜ | |
-| F1.3 | Crear proyecto Supabase | 🤖 infra | ⬜ | |
-| F1.4 | Schema de base de datos | 🤖 infra | ⬜ | Depende de F1.3 |
-| F1.5 | Row Level Security | 🤖 infra | ⬜ | Depende de F1.4 |
+| F1.1 | Crear proyecto Expo | 🤖 infra | ✅ | Expo + TypeScript + Expo Router |
+| F1.2 | Crear repo GitHub `grove-mvp` | 🤖 infra | ✅ | github.com/alimazid/grove-mvp |
+| F1.3 | Crear proyecto Supabase | 🤖 infra | ✅ | Ref: kaoscawtthseblgaxfao |
+| F1.4 | Schema de base de datos | 🤖 infra | ✅ | 5 tables, indexes, triggers |
+| F1.5 | Row Level Security | 🤖 infra | ✅ | All tables RLS enabled |
 | F1.6 | Configurar EAS Build | 🤖 infra | ⬜ | Depende de F1.1 |
 | F1.7 | Registrar GitHub App | 👤 Ali | ✅ | App ID: 2881352 |
 | F1.8 | Configurar GitHub App URLs | 👤 Ali | ⬜ | Depende de F1.7, F1.10 |
 | F1.9 | Guardar credenciales GitHub App | 🤖 infra | ✅ | Stored in ~/.secrets/ |
 | F1.10 | Edge Function: github-auth | 🔧 backend | ⬜ | Depende de F1.4, F1.9 |
 | F1.11 | Encriptación de tokens | 🔧 backend | ⬜ | Depende de F1.4 |
-| F1.12 | Design tokens + Pantalla de Login | 📱 frontend | ⬜ | Depende de F1.1 |
+| F1.12 | Design tokens + Pantalla de Login | 📱 frontend | ✅ | Theme file + login screen matching mockup |
 | F1.13 | Flujo OAuth en la app | 📱 frontend | ⬜ | Depende de F1.10, F1.12 |
 | F1.14 | Persistencia de sesión | 📱 frontend | ⬜ | Depende de F1.13 |
 | F1.15 | Logout | 📱 frontend | ⬜ | Depende de F1.14 |
@@ -117,11 +117,11 @@
 
 | Fase | Total | ⬜ | 🔵 | ✅ | 🔴 |
 |------|-------|----|----|----|----|
-| 1. Foundation | 16 | 14 | 0 | 2 | 0 |
+| 1. Foundation | 16 | 8 | 0 | 8 | 0 |
 | 2. Core Reading | 19 | 19 | 0 | 0 | 0 |
 | 3. Writing | 16 | 16 | 0 | 0 | 0 |
 | 4. Notifications | 23 | 23 | 0 | 0 | 0 |
-| **Total** | **74** | **72** | **0** | **2** | **0** |
+| **Total** | **74** | **66** | **0** | **8** | **0** |
 
 ---
 
@@ -130,3 +130,4 @@
 | Date | Tasks | Notes |
 |------|-------|-------|
 | 2026-02-17 | F1.7 ✅, F1.9 ✅ | GitHub App "Grove" registered. Credentials stored in ~/.secrets/ |
+| 2026-02-17 | F1.1 ✅, F1.2 ✅, F1.3 ✅, F1.4 ✅, F1.5 ✅, F1.12 ✅ | Expo project scaffolded, repo created, Supabase provisioned, schema + RLS applied, design tokens + login screen built |
