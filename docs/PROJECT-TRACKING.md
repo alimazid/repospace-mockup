@@ -106,7 +106,7 @@
 | F4.17 | EAS Build: Android APK | 📦 build | ✅ | Build #10 (a1dbd56a) — APK: kZfhB2cMYL9e4zpvVYoJTs.apk |
 | F4.18 | EAS Build: iOS IPA | 📦 build | ✅ | Build f919b461 — IPA: wL5ziw1YTrXVgWUpBDgEbA.ipa |
 | F4.19 | Configurar Apple Developer | 👤 Ali | ✅ | Apple Developer account + provisioning configured |
-| F4.20 | Subir a TestFlight | 👤 Ali | ⬜ | Depende de F4.18 |
+| F4.20 | Subir a TestFlight | 👤 Ali | ✅ | Build production uploaded + installed via TestFlight |
 | F4.21 | Subir a Google Play internal | 👤 Ali | ⬜ | Depende de F4.17 |
 | F4.22 | **TEST: E2E en dispositivo real** | 👤 Ali | ⬜ | Depende de F4.21 |
 | F4.23 | Fix bugs de testing | 📱/🔧 | ⬜ | Depende de F4.22 |
