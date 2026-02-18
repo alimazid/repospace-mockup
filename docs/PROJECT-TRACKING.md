@@ -103,7 +103,7 @@
 | F4.14 | Empty states | 📱 frontend | ✅ | "No repositories" / "No files" / "No commits" |
 | F4.15 | App icon + splash screen | 📦 build | ✅ | Git tree icon, dark bg, blue accent |
 | F4.16 | Dark/light mode | 📱 frontend | ✅ | Dark mode default, theme tokens ready for light mode |
-| F4.17 | EAS Build: Android APK | 📦 build | ⬜ | Depende de F4.16 |
+| F4.17 | EAS Build: Android APK | 📦 build | ✅ | Build #10 (a1dbd56a) — APK: kZfhB2cMYL9e4zpvVYoJTs.apk |
 | F4.18 | EAS Build: iOS IPA | 📦 build | ⬜ | Depende de F4.16, F4.19 |
 | F4.19 | Configurar Apple Developer | 👤 Ali | ⬜ | |
 | F4.20 | Subir a TestFlight | 👤 Ali | ⬜ | Depende de F4.18 |
